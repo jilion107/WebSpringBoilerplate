@@ -1,9 +1,13 @@
 package com.xmnjm.model;
 
-import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 /**
  * Created by Jilion on 2017/3/4.
@@ -27,6 +31,12 @@ public class User {
     @Column(name = "company_id")
     private Integer companyId;
     private String role;
+
+    private Integer status;
+
+    private Date createTime;
+
+    private Date updateTime;
 
     public User() {
     }
@@ -92,5 +102,29 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }

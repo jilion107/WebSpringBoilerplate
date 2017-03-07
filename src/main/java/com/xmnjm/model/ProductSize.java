@@ -1,21 +1,21 @@
 package com.xmnjm.model;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.Date;
 
 /**
- * Created by jilion.chen on 3/3/2017.
+ * @author mandy.huang
+ * 产品尺寸表
  */
 @Entity
-@Table(name="company")
-public class Company {
+public class ProductSize {
     @Id
-    @NotNull
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
-    @Column(name = "name")
-    private String companyName;
+    @GeneratedValue
+    private Long id;
+
+    private String name;
 
     private Integer status;
 
@@ -23,32 +23,20 @@ public class Company {
 
     private Date updateTime;
 
-    public Company(String companyName) {
-        this.companyName = companyName;
-    }
-
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
     public String getName() {
-        return companyName;
+        return name;
     }
 
     public void setName(String name) {
-        this.companyName = name;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+        this.name = name;
     }
 
     public Integer getStatus() {
