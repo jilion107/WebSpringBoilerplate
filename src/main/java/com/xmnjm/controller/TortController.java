@@ -63,7 +63,7 @@ public class TortController {
         return tortService.list(tort, 0, Integer.MAX_VALUE, null);
     }
 
-    @RequestMapping(value = "/api/tort", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/tort/all", method = RequestMethod.GET)
     @ResponseBody
     List<Tort> list() {
         Tort tort = new Tort();
