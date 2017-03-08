@@ -1,18 +1,11 @@
-package com.xmnjm.model;
+package com.xmnjm.bean;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import java.util.Date;
 
 /**
  * @author mandy.huang
- *         临时库
  */
-@Entity
-public class TmpProducts {
-    @Id
-    @GeneratedValue
+public class Products {
     private Long id;
 
     private String asin;
@@ -26,6 +19,8 @@ public class TmpProducts {
 
     //产品名称
     private String productName;
+
+    private Long productTypeId;
 
     //产品分类
     private String productTypeName;
@@ -126,6 +121,14 @@ public class TmpProducts {
 
     public void setProductName(String productName) {
         this.productName = productName;
+    }
+
+    public Long getProductTypeId() {
+        return productTypeId;
+    }
+
+    public void setProductTypeId(Long productTypeId) {
+        this.productTypeId = productTypeId;
     }
 
     public String getProductTypeName() {

@@ -52,6 +52,10 @@ public class TortProductsService {
         tortProductsDao.update(tortProducts);
     }
 
+    public TortProducts findByAsin(String asin) {
+        return tortProductsDao.findByAsin(asin);
+    }
+
     @Transactional
     public void delete(TortProducts tortProducts) {
         tortProducts.setStatus(0);

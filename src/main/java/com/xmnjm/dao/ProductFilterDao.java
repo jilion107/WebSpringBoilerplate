@@ -42,6 +42,12 @@ public class ProductFilterDao {
         return jpaAccess.find(Query.create("from ProductFilter where status=1 and productTypeId=:productTypeId and productColourId=:productColourId and productSizeId=:productSizeId").param("productTypeId", productTypeId).param("productColourId", productColourId).param("productSizeId", productSizeId));
     }
 
+    public List<ProductFilter> find(String productTypeName, String productColourName, String productSizeName) {
+        return jpaAccess.find(Query.create("from ProductFilter where status=1 and (productTypeName=:productTypeName or productTypeName is null) and (productColourName=:productColourName or productTypeName is null) and (productSizeName=:productSizeName or productSizeName is null)")
+            .param("productTypeName", productTypeName).param("productColourName", productColourName).param("productSizeName", productSizeName));
+    }
+
+
     public List<ProductFilter> list(ProductFilter productFilter, int offset, int fetchSize, String orderField, Boolean isDesc) {
         String vOrderField = Strings.isNullOrEmpty(orderField) ? "id" : orderField;
         Boolean vIsDesc = null == isDesc ? Boolean.FALSE : isDesc;

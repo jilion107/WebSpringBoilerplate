@@ -35,6 +35,10 @@ public class TortProductsDao {
         return jpaAccess.findOne(Query.create("from TortProducts where status=1 and id=:id").param("id", id));
     }
 
+    public TortProducts findByAsin(String asin) {
+        return jpaAccess.findOne(Query.create("from TortProducts where status=1 and asin=:asin").param("asin", asin));
+    }
+
     public List<TortProducts> list(TortProducts tortProducts, int offset, int fetchSize, String orderField, Boolean isDesc) {
         String vOrderField = Strings.isNullOrEmpty(orderField) ? "id" : orderField;
         Boolean vIsDesc = null == isDesc ? Boolean.FALSE : isDesc;

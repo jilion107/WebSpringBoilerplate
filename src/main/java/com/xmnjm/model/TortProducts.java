@@ -39,6 +39,9 @@ public class TortProducts {
     //评论数
     private Integer commentNumber;
 
+    //备注
+    private String comment;
+
     //产品地址
     private String productUrl;
 
@@ -275,5 +278,13 @@ public class TortProducts {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

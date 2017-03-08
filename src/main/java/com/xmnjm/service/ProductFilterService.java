@@ -55,6 +55,10 @@ public class ProductFilterService {
         return productFilterDao.find(productTypeId, productColourId, productSizeId);
     }
 
+    public List<ProductFilter> find(String productTypeName, String productColourName, String productSizeName) {
+        return productFilterDao.find(productTypeName, productColourName, productSizeName);
+    }
+
     public List<ProductFilter> findByType(Long productTypeId) {
         return productFilterDao.findByType(productTypeId);
     }

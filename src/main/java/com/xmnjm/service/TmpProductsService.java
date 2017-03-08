@@ -52,6 +52,10 @@ public class TmpProductsService {
         tmpProductsDao.update(tmpProducts);
     }
 
+    public TmpProducts findByAsin(String asin) {
+        return tmpProductsDao.findByAsin(asin);
+    }
+
     @Transactional
     public void delete(TmpProducts tmpProducts) {
         tmpProducts.setStatus(0);
