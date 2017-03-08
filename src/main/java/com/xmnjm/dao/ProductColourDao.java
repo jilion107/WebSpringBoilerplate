@@ -34,6 +34,10 @@ public class ProductColourDao {
         return jpaAccess.findOne(Query.create("from ProductColour where status=1 and id=:id").param("id", id));
     }
 
+    public List<ProductColour> findByName(String name) {
+        return jpaAccess.find(Query.create("from ProductColour where status=1 and name=:name").param("name", name));
+    }
+
     public List<ProductColour> list(ProductColour productColour, int offset, int fetchSize, String orderField, Boolean isDesc) {
         String vOrderField = Strings.isNullOrEmpty(orderField) ? "id" : orderField;
         Boolean vIsDesc = null == isDesc ? Boolean.FALSE : isDesc;

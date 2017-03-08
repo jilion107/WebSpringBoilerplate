@@ -51,6 +51,14 @@ public class ProductFilterService {
         productFilterDao.update(productFilter);
     }
 
+    public List<ProductFilter> find(Long productTypeId, Long productColourId, Long productSizeId) {
+        return productFilterDao.find(productTypeId, productColourId, productSizeId);
+    }
+
+    public List<ProductFilter> findByType(Long productTypeId) {
+        return productFilterDao.findByType(productTypeId);
+    }
+
     @Transactional
     public void delete(ProductFilter productFilter) {
         productFilter.setStatus(0);

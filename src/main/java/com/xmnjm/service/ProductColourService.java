@@ -52,6 +52,10 @@ public class ProductColourService {
         productColourDao.update(productColour);
     }
 
+    public List<ProductColour> findByName(String name) {
+        return productColourDao.findByName(name);
+    }
+
     @Transactional
     public void delete(ProductColour productColour) {
         productColour.setStatus(0);

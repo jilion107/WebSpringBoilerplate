@@ -35,6 +35,10 @@ public class TortDao {
         return jpaAccess.findOne(Query.create("from Tort where status=1 and id=:id").param("id", id));
     }
 
+    public List<Tort> findByName(String name) {
+        return jpaAccess.find(Query.create("from Tort where status=1 and name=:name").param("name", name));
+    }
+
     public List<Tort> list(Tort tort, int offset, int fetchSize, String orderField, Boolean isDesc) {
         String vOrderField = Strings.isNullOrEmpty(orderField) ? "id" : orderField;
         Boolean vIsDesc = null == isDesc ? Boolean.FALSE : isDesc;

@@ -31,6 +31,10 @@ public class ProductTypeService {
         return productTypeDao.list(productType, offset, fetchSize, orderField, true);
     }
 
+    public List<ProductType> findByName(String name) {
+        return productTypeDao.findByName(name);
+    }
+
     public int count(ProductType productType) {
         return productTypeDao.count(productType);
     }

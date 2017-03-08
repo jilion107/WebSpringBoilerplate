@@ -51,6 +51,10 @@ public class ProductSizeService {
         productSizeDao.update(productSize);
     }
 
+    public List<ProductSize> findByName(String name) {
+        return productSizeDao.findByName(name);
+    }
+
     @Transactional
     public void delete(ProductSize productSize) {
         productSize.setStatus(0);

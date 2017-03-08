@@ -52,6 +52,10 @@ public class TortService {
         tortDao.update(tort);
     }
 
+    public List<Tort> findByName(String name) {
+        return tortDao.findByName(name);
+    }
+
     @Transactional
     public void delete(Tort tort) {
         tort.setStatus(0);

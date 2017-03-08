@@ -48,7 +48,8 @@ public class TmpProducts {
     //高清图地址
     private String productImageUrl;
 
-    private String scenarioWhat;
+    //出单标签
+    private Integer scenarioWhat;
 
     //价格
     private Double price;
@@ -180,11 +181,11 @@ public class TmpProducts {
         this.productImageUrl = productImageUrl;
     }
 
-    public String getScenarioWhat() {
+    public Integer getScenarioWhat() {
         return scenarioWhat;
     }
 
-    public void setScenarioWhat(String scenarioWhat) {
+    public void setScenarioWhat(Integer scenarioWhat) {
         this.scenarioWhat = scenarioWhat;
     }
 

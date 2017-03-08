@@ -34,6 +34,10 @@ public class ProductTypeDao {
         return jpaAccess.findOne(Query.create("from ProductType where status=1 and id=:id").param("id", id));
     }
 
+    public List<ProductType> findByName(String name) {
+        return jpaAccess.find(Query.create("from ProductType where status=1 and name=:name").param("name", name));
+    }
+
     public List<ProductType> list(ProductType productType, int offset, int fetchSize, String orderField, Boolean isDesc) {
         String vOrderField = Strings.isNullOrEmpty(orderField) ? "id" : orderField;
         Boolean vIsDesc = null == isDesc ? Boolean.FALSE : isDesc;
