@@ -34,8 +34,10 @@ public class User {
 
     private Integer status;
 
+    @Column(name = "createtime")
     private Date createTime;
 
+    @Column(name = "updatetime")
     private Date updateTime;
 
     public User() {

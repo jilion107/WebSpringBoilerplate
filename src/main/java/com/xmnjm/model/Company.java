@@ -1,5 +1,7 @@
 package com.xmnjm.model;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -8,6 +10,7 @@ import java.util.Date;
  * Created by jilion.chen on 3/3/2017.
  */
 @Entity
+@DynamicUpdate
 @Table(name="company")
 public class Company {
     @Id
@@ -19,9 +22,14 @@ public class Company {
 
     private Integer status;
 
+    @Column(name = "createtime")
     private Date createTime;
 
+    @Column(name = "updatetime")
     private Date updateTime;
+
+    public Company() {
+    }
 
     public Company(String companyName) {
         this.companyName = companyName;
