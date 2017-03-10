@@ -33,4 +33,8 @@ public class CompanyService {
     public Company updateCompany(Company company){
         return company = companyRepository.save(company);
     }
+
+    public Company addCompany(Company company) {
+        return company = companyRepository.save(company);
+    }
 }

@@ -3,7 +3,6 @@ package com.xmnjm.model;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -14,10 +13,9 @@ import java.util.Date;
 @Table(name="company")
 public class Company {
     @Id
-    @NotNull
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(name = "name")
+    @Column(name = "companyname")
     private String companyName;
 
     private Integer status;
@@ -41,14 +39,6 @@ public class Company {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return companyName;
-    }
-
-    public void setName(String name) {
-        this.companyName = name;
     }
 
     public String getCompanyName() {

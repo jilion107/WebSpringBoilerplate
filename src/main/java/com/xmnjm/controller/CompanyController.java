@@ -25,4 +25,10 @@ public class CompanyController {
     public @ResponseBody Company updateCompany(@RequestBody Company company, @PathVariable String id){
         return companyService.updateCompany(company);
     }
+
+    @RequestMapping("/api/company")
+    public @ResponseBody Company addCompany(@RequestBody Company company) {
+        Company newCompany = new Company(company.getCompanyName());
+        return companyService.addCompany(newCompany);
+    }
 }

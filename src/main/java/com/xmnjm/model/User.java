@@ -1,13 +1,7 @@
 package com.xmnjm.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import java.util.Date;
+import javax.persistence.*;
+import java.sql.Timestamp;
 
 /**
  * Created by Jilion on 2017/3/4.
@@ -16,38 +10,39 @@ import java.util.Date;
 @Table(name="users")
 public class User {
     @Id
-    @NotNull
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "user_name")
+    @Column(name = "username")
     private String userName;
 
-    @Column(name = "login_name")
+    @Column(name = "loginname")
     private String loginName;
 
     private String phone;
     private String password;
-    @Column(name = "company_id")
-    private Integer companyId;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "companyid")
+    private Company company;
     private String role;
 
     private Integer status;
 
     @Column(name = "createtime")
-    private Date createTime;
+    private Timestamp createTime;
 
     @Column(name = "updatetime")
-    private Date updateTime;
+    private Timestamp updateTime;
 
     public User() {
     }
 
-    public User(Integer id, String phone, String password, Integer companyId) {
+    public User(Integer id, String phone, String password, Company company) {
         this.id = id;
         this.phone = phone;
         this.password = password;
-        this.companyId = companyId;
+        this.company = company;
     }
 
     public Integer getId() {
@@ -90,12 +85,12 @@ public class User {
         this.password = password;
     }
 
-    public Integer getCompanyId() {
-        return companyId;
+    public Company getCompany() {
+        return company;
     }
 
-    public void setCompanyId(Integer companyId) {
-        this.companyId = companyId;
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     public String getRole() {
@@ -114,19 +109,19 @@ public class User {
         this.status = status;
     }
 
-    public Date getCreateTime() {
+    public Timestamp getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(Timestamp createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public Timestamp getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(Timestamp updateTime) {
         this.updateTime = updateTime;
     }
 }
