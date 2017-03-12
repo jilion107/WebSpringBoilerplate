@@ -17,7 +17,7 @@ public class ExcelController {
 
     @RequestMapping(value = "/api/upload", method = RequestMethod.GET)
     public void upload() {
-        String fileName = "D:\\fannieERP\\test.xls";
+        String fileName = "D:\\fannieERP\\test1.xls";
         excelOperateService.readXml(fileName, 0);
     }
 

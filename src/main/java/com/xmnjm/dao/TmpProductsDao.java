@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,11 +36,20 @@ public class TmpProductsDao {
         return jpaAccess.findOne(Query.create("from TmpProducts where status=1 and id=:id").param("id", id));
     }
 
+    public void deleteById(Long id) {
+        TmpProducts tmpProducts = jpaAccess.findOne(Query.create("from TmpProducts where status=1 and id=:id").param("id", id));
+        if (tmpProducts != null) jpaAccess.delete(tmpProducts);
+    }
+
+    public void delete(TmpProducts tmpProducts) {
+        if (tmpProducts != null) jpaAccess.delete(tmpProducts);
+    }
+
     public TmpProducts findByAsin(String asin) {
         return jpaAccess.findOne(Query.create("from TmpProducts where status=1 and asin=:asin").param("asin", asin));
     }
 
-    public List<TmpProducts> list(TmpProducts tmpProducts, int offset, int fetchSize, String orderField, Boolean isDesc) {
+    public List<TmpProducts> list(TmpProducts tmpProducts, int offset, int fetchSize, String orderField, Boolean isDesc, Date startCreateTime, Date endCreateTime) {
         String vOrderField = Strings.isNullOrEmpty(orderField) ? "id" : orderField;
         Boolean vIsDesc = null == isDesc ? Boolean.FALSE : isDesc;
         QueryBuilder queryBuilder = QueryBuilder.query("from TmpProducts").skipEmptyFields()
@@ -49,6 +59,8 @@ public class TmpProductsDao {
             .append("productColour", tmpProducts.getProductColour())
             .append("userId", tmpProducts.getUserId())
             .append("companyId", tmpProducts.getCompanyId())
+            .append("createTime", startCreateTime, "<=")
+            .append("createTime", endCreateTime, ">=")
             .orderBy(vOrderField, vIsDesc);
         if (StringUtils.hasText(tmpProducts.getAsin())) {
             queryBuilder.append("asin", '%' + tmpProducts.getAsin() + '%', "like");
@@ -59,13 +71,15 @@ public class TmpProductsDao {
         return jpaAccess.find(queryBuilder.build().from(offset).fetch(fetchSize));
     }
 
-    public int count(TmpProducts tmpProducts) {
+    public Long count(TmpProducts tmpProducts, Date startCreateTime, Date endCreateTime) {
         QueryBuilder queryBuilder = QueryBuilder.query("select count(*) from TmpProducts").skipEmptyFields()
             .append("status", tmpProducts.getStatus())
             .append("productTypeName", tmpProducts.getProductTypeName())
             .append("productSize", tmpProducts.getProductSize())
             .append("productColour", tmpProducts.getProductColour())
             .append("userId", tmpProducts.getUserId())
+            .append("createTime", startCreateTime, "<=")
+            .append("createTime", endCreateTime, ">=")
             .append("companyId", tmpProducts.getCompanyId());
         if (StringUtils.hasText(tmpProducts.getAsin())) {
             queryBuilder.append("asin", '%' + tmpProducts.getAsin() + '%', "like");
@@ -73,6 +87,6 @@ public class TmpProductsDao {
         if (StringUtils.hasText(tmpProducts.getBrand())) {
             queryBuilder.append("brand", '%' + tmpProducts.getBrand() + '%', "like");
         }
-        return Integer.parseInt(jpaAccess.find(queryBuilder.build()).get(0).toString());
+        return Long.parseLong(jpaAccess.find(queryBuilder.build()).get(0).toString());
     }
 }

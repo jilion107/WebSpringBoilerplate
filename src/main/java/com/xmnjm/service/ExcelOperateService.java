@@ -216,21 +216,21 @@ public class ExcelOperateService {
         String type = null;
         String size = null;
         String colour = null;
-        if (row.getCell(4) != null && StringUtils.hasText(row.getCell(4).toString())) type = row.getCell(4).toString();
+        if (row.getCell(4) != null && StringUtils.hasText(row.getCell(4).toString())) type = row.getCell(4).toString().trim();
         if (row.getCell(9) != null && StringUtils.hasText(row.getCell(9).toString())) {
             String kind[] = row.getCell(9).toString().split(",");
-            if (kind.length > 0) size = kind[0];
-            if (kind.length > 1) colour = kind[1];
+            if (kind.length > 0) size = kind[0].trim();
+            if (kind.length > 1) colour = kind[1].trim();
         }
 
         List<ProductFilter> productFilters = productFilterService.find(type, colour, size);
-        return CollectionUtils.isEmpty(productFilters);
+        return !CollectionUtils.isEmpty(productFilters);
     }
 
     //是否侵权
     public boolean isTort(Row row) {
         String brand = null;
-        if (row.getCell(1) != null && StringUtils.hasText(row.getCell(1).toString())) brand = row.getCell(1).toString();
+        if (row.getCell(1) != null && StringUtils.hasText(row.getCell(1).toString())) brand = row.getCell(1).toString().trim();
         if (brand == null) return false;
         List<Tort> torts = tortService.findByName(brand);
         return !CollectionUtils.isEmpty(torts);

@@ -27,29 +27,21 @@ public class TmpProductsService {
         tmpProductsDao.save(tmpProducts);
     }
 
-    public List<TmpProducts> list(TmpProducts tmpProducts, int offset, int fetchSize, String orderField) {
-        return tmpProductsDao.list(tmpProducts, offset, fetchSize, orderField, true);
+    public List<TmpProducts> list(TmpProducts tmpProducts, int offset, int fetchSize, String orderField, Date startCreateTime, Date endCreateTime) {
+        return tmpProductsDao.list(tmpProducts, offset, fetchSize, orderField, true, startCreateTime, endCreateTime);
     }
 
-    public int count(TmpProducts tmpProducts) {
-        return tmpProductsDao.count(tmpProducts);
+    public Long count(TmpProducts tmpProducts, Date startCreateTime, Date endCreateTime) {
+        return tmpProductsDao.count(tmpProducts, startCreateTime, endCreateTime);
     }
 
     @Transactional
     public void delete(Long id) {
-        TmpProducts tmpProducts = findById(id);
-        tmpProducts.setStatus(0);
-        update(tmpProducts);
+        tmpProductsDao.deleteById(id);
     }
 
     public TmpProducts findById(Long id) {
         return tmpProductsDao.findById(id);
-    }
-
-    @Transactional
-    public void update(TmpProducts tmpProducts) {
-        tmpProducts.setUpdateTime(new Date());
-        tmpProductsDao.update(tmpProducts);
     }
 
     public TmpProducts findByAsin(String asin) {
@@ -58,7 +50,12 @@ public class TmpProductsService {
 
     @Transactional
     public void delete(TmpProducts tmpProducts) {
-        tmpProducts.setStatus(0);
-        update(tmpProducts);
+        tmpProductsDao.delete(tmpProducts);
+    }
+
+    @Transactional
+    public void update(TmpProducts tmpProducts) {
+        tmpProducts.setUpdateTime(new Date());
+        tmpProductsDao.update(tmpProducts);
     }
 }

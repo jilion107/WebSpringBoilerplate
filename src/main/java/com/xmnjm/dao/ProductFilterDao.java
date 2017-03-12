@@ -43,7 +43,7 @@ public class ProductFilterDao {
     }
 
     public List<ProductFilter> find(String productTypeName, String productColourName, String productSizeName) {
-        return jpaAccess.find(Query.create("from ProductFilter where status=1 and (productTypeName=:productTypeName or productTypeName is null) and (productColourName=:productColourName or productTypeName is null) and (productSizeName=:productSizeName or productSizeName is null)")
+        return jpaAccess.find(Query.create("from ProductFilter where status=1 and (productTypeName=:productTypeName or productTypeName is null) and (productColourName=:productColourName or productColourName is null) and (productSizeName=:productSizeName or productSizeName is null)")
             .param("productTypeName", productTypeName).param("productColourName", productColourName).param("productSizeName", productSizeName));
     }
 
