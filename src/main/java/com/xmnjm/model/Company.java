@@ -1,27 +1,33 @@
 package com.xmnjm.model;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
  * Created by jilion.chen on 3/3/2017.
  */
 @Entity
+@DynamicUpdate
 @Table(name="company")
 public class Company {
     @Id
-    @NotNull
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(name = "name")
+    @Column(name = "companyname")
     private String companyName;
 
     private Integer status;
 
+    @Column(name = "createtime")
     private Date createTime;
 
+    @Column(name = "updatetime")
     private Date updateTime;
+
+    public Company() {
+    }
 
     public Company(String companyName) {
         this.companyName = companyName;
@@ -33,14 +39,6 @@ public class Company {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return companyName;
-    }
-
-    public void setName(String name) {
-        this.companyName = name;
     }
 
     public String getCompanyName() {

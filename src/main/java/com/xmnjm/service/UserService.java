@@ -30,6 +30,10 @@ public class UserService {
         return userList;
     }
 
+    public User updateUser(User user) {
+        return user = userRepository.save(user);
+    }
+
     public User findByUserNameAndPassword(String username, String password) {
         User user = userRepository.findByUserNameAndPassword(username, password);
         return user;
