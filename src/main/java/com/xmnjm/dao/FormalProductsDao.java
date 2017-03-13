@@ -6,17 +6,15 @@ import com.xmnjm.dbcommon.JPAAccess;
 import com.xmnjm.dbcommon.Query;
 import com.xmnjm.dbcommon.QueryBuilder;
 import com.xmnjm.model.FormalProducts;
-import org.springframework.jdbc.core.JdbcTemplate;
+import com.xmnjm.service.GenDataService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author mandy.huang
@@ -26,7 +24,7 @@ public class FormalProductsDao {
     @Inject
     JPAAccess jpaAccess;
     @Inject
-    JdbcTemplate jdbcTemplate;
+    GenDataService genDataService;
 
     @Transactional
     public void save(FormalProducts formalProducts) {
@@ -41,6 +39,18 @@ public class FormalProductsDao {
 
     public FormalProducts findById(Long id) {
         return jpaAccess.findOne(Query.create("from FormalProducts where status=1 and id=:id").param("id", id));
+    }
+
+    public List<FormalProducts> export(List<Long> ids, Date endUpdateTime, int fetch) {
+        if (CollectionUtils.isEmpty(ids)) return null;
+        StringBuilder builder = new StringBuilder();
+        builder.append("from FormalProducts where status=1 and id in (-100,");
+        for (int i = 0; i < ids.size(); i++) {
+            builder.append(',').append(ids.get(i));
+        }
+        builder.append(") and ").append("updateTime>=:endUpdateTime");
+        Query query = Query.create(builder.toString()).param("endUpdateTime", endUpdateTime).from(0).fetch(fetch);
+        return jpaAccess.find(query);
     }
 
     public FormalProducts findByAsin(String asin) {
@@ -70,68 +80,16 @@ public class FormalProductsDao {
     public List<FormalProducts> list(ProductRequest productRequest, int offset, int fetchSize) {
         StringBuilder builder = new StringBuilder();
         builder.append("from FormalProducts where 1=1 ");
-        Query query = this.genQuery(productRequest, builder);
+        Query query = genDataService.genQuery(productRequest, builder);
         query.from(offset).fetch(fetchSize);
         return jpaAccess.find(query);
     }
 
-    public Query genQuery(ProductRequest productRequest, StringBuilder builder) {
-        Map<String, Object> params = new HashMap<>();
-        if (StringUtils.hasText(productRequest.getBrand())) {
-            builder.append("and brand=:brand ");
-            params.put("brand", productRequest.getBrand());
-        }
-        if (StringUtils.hasText(productRequest.getAsin())) {
-            builder.append("and asin=:asin ");
-            params.put("asin", productRequest.getAsin());
-        }
-        if (productRequest.getProductTypeId() != null && productRequest.getProductTypeId() > 0) {
-            builder.append("and productTypeId=:productTypeId ");
-            params.put("productTypeId", productRequest.getProductTypeId());
-        }
-        if (productRequest.getScenarioWhat() != null) {
-            builder.append("and scenarioWhat=:scenarioWhat ");
-            params.put("scenarioWhat", productRequest.getScenarioWhat());
-        }
-        if (productRequest.getStartCreateTime() != null) {
-            builder.append("and createTime<=:startCreateTime ");
-            params.put("startCreateTime", productRequest.getStartCreateTime());
-        }
-        if (productRequest.getEndCreateTime() != null) {
-            builder.append("and createTime>=:endCreateTime ");
-            params.put("endCreateTime", productRequest.getEndCreateTime());
-        }
-        if (!CollectionUtils.isEmpty(productRequest.getProductSizes())) {
-            builder.append("and (");
-            for (int i = 0; i < productRequest.getProductSizes().size(); i++) {
-                builder.append("productSize=:productSize").append(i);
-                if (i < productRequest.getProductSizes().size() - 1) builder.append(" or ");
-                params.put("productSize" + i, productRequest.getProductSizes().get(i));
-            }
-            builder.append(") ");
-        }
-        if (!CollectionUtils.isEmpty(productRequest.getProductColours())) {
-            builder.append("and (");
-            for (int i = 0; i < productRequest.getProductColours().size(); i++) {
-                builder.append("productColour=:productColour").append(i);
-                if (i < productRequest.getProductColours().size() - 1) builder.append(" or ");
-                params.put("productColour" + i, productRequest.getProductColours().get(i));
-            }
-            builder.append(") ");
-        }
-        Query query = Query.create(builder.toString());
-        Iterator<String> it = params.keySet().iterator();
-        while (it.hasNext()) {
-            String key = it.next();
-            query.param(key, params.get(key));
-        }
-        return query;
-    }
 
     public Long count(ProductRequest productRequest) {
         StringBuilder builder = new StringBuilder();
         builder.append("select count(*) from FormalProducts where 1=1 ");
-        Query query = this.genQuery(productRequest, builder);
+        Query query = genDataService.genQuery(productRequest, builder);
         return Long.parseLong(jpaAccess.find(query).get(0).toString());
     }
 

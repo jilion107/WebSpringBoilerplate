@@ -4,7 +4,6 @@ import com.xmnjm.bean.FindResult;
 import com.xmnjm.bean.ProductRequest;
 import com.xmnjm.model.TmpProducts;
 import com.xmnjm.service.TmpProductsService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +19,7 @@ import java.util.List;
 
 /**
  * @author mandy.huang
+ *         临时库管理
  */
 @RestController
 @CrossOrigin(origins = "http://localhost:8080")
@@ -54,22 +54,26 @@ public class TmpProductsController {
         return tmpProducts;
     }
 
+    /**
+     * 搜索
+     *
+     * @param productRequest
+     * @param offset
+     * @param fetchSize
+     * @return
+     */
     @RequestMapping(value = "/api/tmp-products/list", method = RequestMethod.POST)
     @ResponseBody
     FindResult<TmpProducts> list(@Valid @RequestBody ProductRequest productRequest, @RequestParam(value = "offset", defaultValue = "0") int offset,
                                  @RequestParam(value = "fetchSize", defaultValue = "20") int fetchSize) {
-        TmpProducts tmpProducts = new TmpProducts();
-        BeanUtils.copyProperties(productRequest, tmpProducts);
-        List<TmpProducts> tmpProductses = tmpProductsService.list(tmpProducts, offset, fetchSize, "createTime", productRequest.getStartCreateTime(), productRequest.getEndCreateTime());
-        Long total = tmpProductsService.count(tmpProducts, productRequest.getStartCreateTime(), productRequest.getEndCreateTime());
+        List<TmpProducts> tmpProductses = tmpProductsService.list(productRequest, offset, fetchSize);
+        Long total = tmpProductsService.count(productRequest);
         return new FindResult<TmpProducts>(tmpProductses, offset, total);
     }
 
     @RequestMapping(value = "/api/tmp-products/count", method = RequestMethod.POST)
     @ResponseBody
     Long count(@Valid @RequestBody ProductRequest productRequest) {
-        TmpProducts tmpProducts = new TmpProducts();
-        BeanUtils.copyProperties(productRequest, tmpProducts);
-        return tmpProductsService.count(tmpProducts, productRequest.getStartCreateTime(), productRequest.getEndCreateTime());
+        return tmpProductsService.count(productRequest);
     }
 }

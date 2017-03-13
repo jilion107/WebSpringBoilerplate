@@ -1,6 +1,7 @@
 package com.xmnjm.service;
 
 
+import com.xmnjm.bean.ProductRequest;
 import com.xmnjm.dao.TortProductsDao;
 import com.xmnjm.model.TortProducts;
 import org.springframework.stereotype.Service;
@@ -60,5 +61,13 @@ public class TortProductsService {
     public void delete(TortProducts tortProducts) {
         tortProducts.setStatus(0);
         update(tortProducts);
+    }
+
+    public List<TortProducts> list(ProductRequest productRequest, int offset, int fetchSize) {
+        return tortProductsDao.list(productRequest, offset, fetchSize);
+    }
+
+    public Long count(ProductRequest productRequest) {
+        return tortProductsDao.count(productRequest);
     }
 }

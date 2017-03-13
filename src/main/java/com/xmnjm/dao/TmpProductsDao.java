@@ -1,10 +1,12 @@
 package com.xmnjm.dao;
 
 import com.google.common.base.Strings;
+import com.xmnjm.bean.ProductRequest;
 import com.xmnjm.dbcommon.JPAAccess;
 import com.xmnjm.dbcommon.Query;
 import com.xmnjm.dbcommon.QueryBuilder;
 import com.xmnjm.model.TmpProducts;
+import com.xmnjm.service.GenDataService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -20,6 +22,8 @@ import java.util.List;
 public class TmpProductsDao {
     @Inject
     JPAAccess jpaAccess;
+    @Inject
+    GenDataService genDataService;
 
     @Transactional
     public void save(TmpProducts tmpProducts) {
@@ -88,5 +92,21 @@ public class TmpProductsDao {
             queryBuilder.append("brand", '%' + tmpProducts.getBrand() + '%', "like");
         }
         return Long.parseLong(jpaAccess.find(queryBuilder.build()).get(0).toString());
+    }
+
+    public List<TmpProducts> list(ProductRequest productRequest, int offset, int fetchSize) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("from TmpProducts where 1=1 ");
+        Query query = genDataService.genQuery(productRequest, builder);
+        query.from(offset).fetch(fetchSize);
+        return jpaAccess.find(query);
+    }
+
+
+    public Long count(ProductRequest productRequest) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("select count(*) from TmpProducts where 1=1 ");
+        Query query = genDataService.genQuery(productRequest, builder);
+        return Long.parseLong(jpaAccess.find(query).get(0).toString());
     }
 }

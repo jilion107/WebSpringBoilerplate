@@ -38,4 +38,8 @@ public class UserService {
         User user = userRepository.findByUserNameAndPassword(username, password);
         return user;
     }
+
+    public User save(User user) {
+        return userRepository.save(user);
+    }
 }

@@ -1,6 +1,7 @@
 package com.xmnjm.service;
 
 
+import com.xmnjm.bean.ProductRequest;
 import com.xmnjm.dao.TmpProductsDao;
 import com.xmnjm.model.TmpProducts;
 import org.springframework.stereotype.Service;
@@ -57,5 +58,13 @@ public class TmpProductsService {
     public void update(TmpProducts tmpProducts) {
         tmpProducts.setUpdateTime(new Date());
         tmpProductsDao.update(tmpProducts);
+    }
+
+    public List<TmpProducts> list(ProductRequest productRequest, int offset, int fetchSize) {
+        return tmpProductsDao.list(productRequest, offset, fetchSize);
+    }
+
+    public Long count(ProductRequest productRequest) {
+        return tmpProductsDao.count(productRequest);
     }
 }

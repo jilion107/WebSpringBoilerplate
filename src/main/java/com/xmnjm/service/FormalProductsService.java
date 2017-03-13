@@ -80,4 +80,9 @@ public class FormalProductsService {
         formalProducts.setStatus(1);
         formalProductsDao.save(formalProducts);
     }
+
+    public List<FormalProducts> export(List<Long> ids, Date endUpdateTime, int fetch) {
+        return formalProductsDao.export(ids, endUpdateTime, fetch);
+    }
+
 }
