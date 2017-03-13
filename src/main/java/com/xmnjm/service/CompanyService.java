@@ -16,7 +16,7 @@ public class CompanyService {
     @Autowired
     private CompanyRepository companyRepository;
 
-    public Company getCompany(Long companyId) {
+    public Company getCompany(Integer companyId) {
         Company company = companyRepository.findOne(companyId);
         return company;
     }
@@ -36,5 +36,9 @@ public class CompanyService {
 
     public Company addCompany(Company company) {
         return company = companyRepository.save(company);
+    }
+
+    public void deleteCompany(Integer companyId) {
+        companyRepository.delete(companyId);
     }
 }
