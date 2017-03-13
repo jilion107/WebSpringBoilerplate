@@ -16,19 +16,24 @@ public class CompanyController {
     @Autowired
     private CompanyService companyService;
 
-    @RequestMapping("/api/companies")
+    @RequestMapping(value = "/api/companies", method = RequestMethod.GET)
     public @ResponseBody List<Company> getAllCompanies() {
         return companyService.getAllCompanies();
     }
 
-    @RequestMapping("/api/companies/{id}")
-    public @ResponseBody Company updateCompany(@RequestBody Company company, @PathVariable String id){
+    @RequestMapping(value = "/api/companies/{id}", method = RequestMethod.PUT)
+    public @ResponseBody Company updateCompany(@RequestBody Company company){
         return companyService.updateCompany(company);
     }
 
-    @RequestMapping("/api/company")
+    @RequestMapping(value = "/api/company", method = RequestMethod.POST)
     public @ResponseBody Company addCompany(@RequestBody Company company) {
         Company newCompany = new Company(company.getCompanyName());
         return companyService.addCompany(newCompany);
+    }
+
+    @RequestMapping(value="/api/companies/{id}", method = RequestMethod.DELETE)
+    public @ResponseBody void deleteCompany(@PathVariable String id){
+        companyService.deleteCompany(new Integer(id));
     }
 }

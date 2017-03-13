@@ -20,7 +20,7 @@ import java.util.List;
  * @author mandy.huang
  */
 @RestController
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://localhost:8082")
 public class ProductColourController {
     @Inject
     ProductColourService productColourService;
