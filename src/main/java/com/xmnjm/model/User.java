@@ -1,13 +1,18 @@
 package com.xmnjm.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.sql.Timestamp;
 
 /**
  * Created by Jilion on 2017/3/4.
  */
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,9 +27,8 @@ public class User {
     private String phone;
     private String password;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "companyid")
-    private Company company;
+    private Long companyId;
+
     private String role;
 
     private Integer status;
@@ -38,11 +42,11 @@ public class User {
     public User() {
     }
 
-    public User(Integer id, String phone, String password, Company company) {
+    public User(Integer id, String phone, String password, Long companyId) {
         this.id = id;
         this.phone = phone;
         this.password = password;
-        this.company = company;
+        this.companyId = companyId;
     }
 
     public Integer getId() {
@@ -85,12 +89,12 @@ public class User {
         this.password = password;
     }
 
-    public Company getCompany() {
-        return company;
+    public Long getCompanyId() {
+        return companyId;
     }
 
-    public void setCompany(Company company) {
-        this.company = company;
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
     }
 
     public String getRole() {

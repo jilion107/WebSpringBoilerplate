@@ -3,11 +3,11 @@ package com.xmnjm.service;
 import com.xmnjm.bean.ProductRequest;
 import com.xmnjm.dao.FormalProductsDao;
 import com.xmnjm.model.FormalProducts;
+import com.xmnjm.model.ProductType;
 import com.xmnjm.model.TmpProducts;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.inject.Inject;
 import java.util.Date;
@@ -23,6 +23,8 @@ public class FormalProductsService {
     FormalProductsDao formalProductsDao;
     @Inject
     TmpProductsService tmpProductsService;
+    @Inject
+    ProductTypeService productTypeService;
 
     public List<FormalProducts> list(FormalProducts formalProducts, int offset, int fetchSize, String orderField) {
         return formalProductsDao.list(formalProducts, offset, fetchSize, orderField, true);
@@ -64,11 +66,16 @@ public class FormalProductsService {
     }
 
     @Transactional
-    public void saveFromTmpProduct(@RequestParam("tmpProductId") Long tmpProductId) {
+    public void saveFromTmpProduct(Long productTypeId, Long tmpProductId) {
         TmpProducts tmpProducts = tmpProductsService.findById(tmpProductId);
         if (tmpProducts == null) return;
         FormalProducts formalProducts = new FormalProducts();
         BeanUtils.copyProperties(tmpProducts, formalProducts, "id");
+        ProductType productType = productTypeService.findById(productTypeId);
+        if (productType != null) {
+            formalProducts.setProductTypeId(productTypeId);
+            formalProducts.setProductTypeName(productType.getName());
+        }
         this.save(formalProducts);
         tmpProductsService.delete(tmpProductId);
     }

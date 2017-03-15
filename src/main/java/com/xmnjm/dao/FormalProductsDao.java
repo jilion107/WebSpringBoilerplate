@@ -44,11 +44,11 @@ public class FormalProductsDao {
     public List<FormalProducts> export(List<Long> ids, Date endUpdateTime, int fetch) {
         if (CollectionUtils.isEmpty(ids)) return null;
         StringBuilder builder = new StringBuilder();
-        builder.append("from FormalProducts where status=1 and id in (-100,");
+        builder.append("from FormalProducts where status=1 and id in (-100");
         for (int i = 0; i < ids.size(); i++) {
             builder.append(',').append(ids.get(i));
         }
-        builder.append(") and ").append("updateTime>=:endUpdateTime");
+        builder.append(") and ").append("updateTime<:endUpdateTime");
         Query query = Query.create(builder.toString()).param("endUpdateTime", endUpdateTime).from(0).fetch(fetch);
         return jpaAccess.find(query);
     }

@@ -11,7 +11,7 @@ import javax.inject.Inject;
  * @author mandy.huang
  */
 @RestController
-public class ExcelController {
+public class ImportDataController {
     @Inject
     ExcelOperateService excelOperateService;
 

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,11 +31,17 @@ public class CompanyService {
         return companyList;
     }
 
-    public Company updateCompany(Company company){
+    public Company updateCompany(Company company) {
+        Date now = new Date();
+        company.setUpdateTime(now);
         return company = companyRepository.save(company);
     }
 
     public Company addCompany(Company company) {
+        Date now = new Date();
+        company.setCreateTime(now);
+        company.setUpdateTime(now);
+        company.setStatus(1);
         return company = companyRepository.save(company);
     }
 

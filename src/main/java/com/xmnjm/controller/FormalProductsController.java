@@ -89,10 +89,10 @@ public class FormalProductsController {
      *
      * @param tmpProductId
      */
-    @RequestMapping(value = "/api/formal-products/by-tmp-product-id", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/add-to-formal-products/{productTypeId}", method = RequestMethod.GET)
     @ResponseBody
-    void save(@RequestParam("tmpProductId") Long tmpProductId) {
-        formalProductsService.saveFromTmpProduct(tmpProductId);
+    void save(@PathVariable("productTypeId") Long productTypeId, @RequestParam("tmpProductId") Long tmpProductId) {
+        formalProductsService.saveFromTmpProduct(productTypeId, tmpProductId);
     }
 
     /**
@@ -100,13 +100,13 @@ public class FormalProductsController {
      *
      * @param productsIdRequest
      */
-    @RequestMapping(value = "/api/formal-products/multi", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/formal-products/multi/{productTypeId}", method = RequestMethod.POST)
     @ResponseBody
-    void save(@Valid @RequestBody ProductsIdRequest productsIdRequest) {
+    void save(@Valid @RequestBody ProductsIdRequest productsIdRequest, @PathVariable("productTypeId") Long productTypeId) {
         List<Long> productIds = productsIdRequest.getProductIds();
         if (CollectionUtils.isEmpty(productIds)) return;
         for (int i = 0; i < productIds.size(); i++) {
-            formalProductsService.saveFromTmpProduct(productIds.get(i));
+            formalProductsService.saveFromTmpProduct(productTypeId, productIds.get(i));
         }
     }
 

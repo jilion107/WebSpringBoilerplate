@@ -64,7 +64,6 @@ public class UserController {
         }
         UserResponse userResponse = new UserResponse();
         BeanUtils.copyProperties(user, userResponse);
-        if (user.getCompany() != null) userResponse.setCompany(user.getCompany());
 
         result.put("result", "success");
         result.put("user", userResponse);

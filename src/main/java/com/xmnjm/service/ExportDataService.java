@@ -28,7 +28,7 @@ public class ExportDataService {
         List<FormalProducts> formalProductses = formalProductsService.export(exportDataRequest.getProductIds(), endUpdateTime, exportDataRequest.getTotal());
         StringBuilder builder = new StringBuilder();
         builder.append("sku\tproduct-id\tproduct-id-type\tprice\tminimum-seller-allowed-price\tmaximum-seller-allowed-price\titem-condition\tquantity\tadd-delete\twill-ship-internationally\texpedited-shipping\tstandard-plus\titem-note\tfulfillment-center-id\tproduct-tax-code\tleadtime-to-ship").append("\n");
-        if (CollectionUtils.isEmpty(formalProductses)) {
+        if (!CollectionUtils.isEmpty(formalProductses)) {
             for (FormalProducts formalProducts : formalProductses) {
                 builder.append(randomSkuId()).append('\t');
                 builder.append(formalProducts.getAsin()).append('\t');
@@ -40,7 +40,7 @@ public class ExportDataService {
                 builder.append("a\t");//add-delete
                 builder.append("1\t");//will-ship-internationally
                 builder.append("\t\t\t\t\t");
-                builder.append("4");//leadtime-to-ship
+                builder.append(exportDataRequest.getDeliveryDays());//leadtime-to-ship
                 builder.append("\n");
                 formalProductsService.update(formalProducts);
             }
