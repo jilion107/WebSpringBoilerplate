@@ -48,4 +48,8 @@ public class CompanyService {
     public void deleteCompany(Integer companyId) {
         companyRepository.delete(companyId);
     }
+
+    public Company findCompanyByName(String companyName) {
+        return companyRepository.findByCompanyName(companyName);
+    }
 }

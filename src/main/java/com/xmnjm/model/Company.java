@@ -1,6 +1,7 @@
 package com.xmnjm.model;
 
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.SelectBeforeUpdate;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -10,6 +11,7 @@ import java.util.Date;
  */
 @Entity
 @DynamicUpdate
+@SelectBeforeUpdate
 @Table(name="company")
 public class Company {
     @Id

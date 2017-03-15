@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * Created by jilion.chen on 3/10/2017.
  */
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://localhost:8082")
 @RestController
 public class UserController {
     @Autowired
@@ -40,7 +40,7 @@ public class UserController {
         return userService.updateUser(user);
     }
 
-    @RequestMapping(value = "/api/users", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/user", method = RequestMethod.POST)
     @ResponseBody
     public User register(@RequestBody User user) {
         return userService.save(user);
@@ -64,7 +64,6 @@ public class UserController {
         }
         UserResponse userResponse = new UserResponse();
         BeanUtils.copyProperties(user, userResponse);
-
         result.put("result", "success");
         result.put("user", userResponse);
         return result;
