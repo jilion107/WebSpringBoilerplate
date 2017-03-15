@@ -15,9 +15,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.inject.Inject;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
@@ -40,14 +40,14 @@ public class ExcelOperateService {
     TortService tortService;
 
 
-    public void readXml(String fileName, Integer scenarioWhat) {
+    public void readXml(CommonsMultipartFile file, Integer scenarioWhat) {
         boolean isE2007 = false;    //判断是否是excel2007格式
-        if (fileName.endsWith("xlsx"))
+        if (file.getOriginalFilename().endsWith("xlsx"))
             isE2007 = true;
         InputStream input = null;
         Workbook wb = null;
         try {
-            input = new FileInputStream(fileName);  //建立输入流
+            input = file.getInputStream();  //建立输入流
             //根据文件格式(2003或者2007)来初始化
             if (isE2007)
                 wb = new XSSFWorkbook(input);

@@ -3,6 +3,7 @@ package com.xmnjm.controller;
 import com.xmnjm.bean.ExportDataRequest;
 import com.xmnjm.service.ExportDataService;
 import com.xmnjm.service.FormalProductsService;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,14 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.inject.Inject;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author mandy.huang
@@ -29,9 +29,9 @@ public class ExportDataController {
     @Inject
     FormalProductsService formalProductsService;
 
-    @RequestMapping(value = "/api/formal-products/export", method = RequestMethod.GET)
-    void export(HttpServletResponse response) {
-        ExportDataRequest exportDataRequest = new ExportDataRequest();
+    @RequestMapping(value = "/api/formal-products/export", method = RequestMethod.POST)
+    void export(@Valid @RequestBody ExportDataRequest exportDataRequest, HttpServletResponse response) {
+      /*  ExportDataRequest exportDataRequest = new ExportDataRequest();
         List<Long> productIds = new ArrayList<>();
         productIds.add(1l);
         productIds.add(2l);
@@ -45,7 +45,7 @@ public class ExportDataController {
         exportDataRequest.setMaxQuantity(100);
         exportDataRequest.setMinQuantity(50);
         exportDataRequest.setPrices(15.29);
-        exportDataRequest.setTotal(2);
+        exportDataRequest.setTotal(2);*/
         StringBuilder builder = exportDataService.genExportData(exportDataRequest);
 
         String fileName = "download-products.txt";
@@ -84,7 +84,6 @@ public class ExportDataController {
                 file.delete();
             }
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
