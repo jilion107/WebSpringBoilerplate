@@ -6,7 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * Created by Jilion on 2017/3/4.
@@ -27,22 +27,22 @@ public class User {
     private String phone;
     private String password;
 
-    private Long companyId;
+    private Integer companyId;
 
     private String role;
 
     private Integer status;
 
     @Column(name = "createtime")
-    private Timestamp createTime;
+    private Date createTime;
 
     @Column(name = "updatetime")
-    private Timestamp updateTime;
+    private Date updateTime;
 
     public User() {
     }
 
-    public User(Integer id, String phone, String password, Long companyId) {
+    public User(Integer id, String phone, String password, Integer companyId) {
         this.id = id;
         this.phone = phone;
         this.password = password;
@@ -89,11 +89,11 @@ public class User {
         this.password = password;
     }
 
-    public Long getCompanyId() {
+    public Integer getCompanyId() {
         return companyId;
     }
 
-    public void setCompanyId(Long companyId) {
+    public void setCompanyId(Integer companyId) {
         this.companyId = companyId;
     }
 
@@ -113,19 +113,19 @@ public class User {
         this.status = status;
     }
 
-    public Timestamp getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Timestamp createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
-    public Timestamp getUpdateTime() {
+    public Date getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Timestamp updateTime) {
+    public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
 }

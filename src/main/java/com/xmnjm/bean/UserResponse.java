@@ -3,6 +3,7 @@ package com.xmnjm.bean;
 import com.xmnjm.model.Company;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * @author mandy.huang
@@ -16,8 +17,8 @@ public class UserResponse {
     private Company company;
     private String role;
     private Integer status;
-    private Timestamp createTime;
-    private Timestamp updateTime;
+    private Date createTime;
+    private Date updateTime;
 
     public Integer getId() {
         return id;
@@ -75,19 +76,19 @@ public class UserResponse {
         this.status = status;
     }
 
-    public Timestamp getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Timestamp createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
-    public Timestamp getUpdateTime() {
+    public Date getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Timestamp updateTime) {
+    public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
 }

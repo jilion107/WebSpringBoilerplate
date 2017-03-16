@@ -5,6 +5,7 @@ import com.xmnjm.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User getUser(Long userId) {
+    public User getUser(Integer userId) {
         User user = userRepository.findOne(userId);
         return user;
     }
@@ -34,12 +35,28 @@ public class UserService {
         return user = userRepository.save(user);
     }
 
-    public User findByUserNameAndPassword(String username, String password) {
-        User user = userRepository.findByUserNameAndPassword(username, password);
+    public User findByLoginNameAndPassword(String loginName, String password) {
+        User user = userRepository.findByLoginNameAndPassword(loginName, password);
         return user;
     }
 
     public User save(User user) {
         return userRepository.save(user);
+    }
+
+    public List<User> findByCompanyId(Integer companyId) {
+        return userRepository.findByCompanyId(companyId);
+    }
+
+    public List<User> findByLoginName(String userName) {
+        return userRepository.findByLoginName(userName);
+    }
+
+    private User findById(Integer id){
+        return userRepository.findById(id);
+    }
+
+    public void deleteUser(Integer userId) {
+        userRepository.delete(userId);
     }
 }
