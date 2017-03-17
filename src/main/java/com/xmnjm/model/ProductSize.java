@@ -15,7 +15,7 @@ public class ProductSize {
     @GeneratedValue
     private Long id;
 
-    private String name;
+    private String sizeName;
 
     private Integer status;
 
@@ -31,12 +31,12 @@ public class ProductSize {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getSizeName() {
+        return sizeName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setSizeName(String sizeName) {
+        this.sizeName = sizeName;
     }
 
     public Integer getStatus() {

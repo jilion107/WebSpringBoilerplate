@@ -37,8 +37,7 @@ public class ProductFilterService {
     @Transactional
     public void delete(Long id) {
         ProductFilter productFilter = findById(id);
-        productFilter.setStatus(0);
-        update(productFilter);
+        productFilterDao.delete(productFilter);
     }
 
     public ProductFilter findById(Long id) {
@@ -59,8 +58,16 @@ public class ProductFilterService {
         return productFilterDao.find(productTypeName, productColourName, productSizeName);
     }
 
-    public List<ProductFilter> findByType(Long productTypeId) {
-        return productFilterDao.findByType(productTypeId);
+    public List<ProductFilter> findByProductCategoryId(Long productCategoryId) {
+        return productFilterDao.findByProductCategoryId(productCategoryId);
+    }
+
+    public List<ProductFilter> findByProductColourId(Long productColourId) {
+        return productFilterDao.findByProductColourId(productColourId);
+    }
+
+    public List<ProductFilter> findByProductSizeId(Long productSizeId) {
+        return productFilterDao.findByProductSizeId(productSizeId);
     }
 
     @Transactional

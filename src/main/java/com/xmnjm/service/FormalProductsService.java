@@ -3,7 +3,7 @@ package com.xmnjm.service;
 import com.xmnjm.bean.ProductRequest;
 import com.xmnjm.dao.FormalProductsDao;
 import com.xmnjm.model.FormalProducts;
-import com.xmnjm.model.ProductType;
+import com.xmnjm.model.ProductCategory;
 import com.xmnjm.model.TmpProducts;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class FormalProductsService {
     @Inject
     TmpProductsService tmpProductsService;
     @Inject
-    ProductTypeService productTypeService;
+    ProductCategoryService productCategoryService;
 
     public List<FormalProducts> list(FormalProducts formalProducts, int offset, int fetchSize, String orderField) {
         return formalProductsDao.list(formalProducts, offset, fetchSize, orderField, true);
@@ -71,10 +71,10 @@ public class FormalProductsService {
         if (tmpProducts == null) return;
         FormalProducts formalProducts = new FormalProducts();
         BeanUtils.copyProperties(tmpProducts, formalProducts, "id");
-        ProductType productType = productTypeService.findById(productTypeId);
-        if (productType != null) {
+        ProductCategory productCategory = productCategoryService.findById(productTypeId);
+        if (productCategory != null) {
             formalProducts.setProductTypeId(productTypeId);
-            formalProducts.setProductTypeName(productType.getName());
+            formalProducts.setProductTypeName(productCategory.getCategoryName());
         }
         this.save(formalProducts);
         tmpProductsService.delete(tmpProductId);

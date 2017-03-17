@@ -16,10 +16,10 @@ public class ProductFilter {
     private Long id;
 
     //产品分类Id
-    private Long productTypeId;
+    private Long productCategoryId;
 
     //产品分类名称
-    private String productTypeName;
+    private String productCategoryName;
 
     //产品颜色ID
     private Long productColourId;
@@ -47,20 +47,20 @@ public class ProductFilter {
         this.id = id;
     }
 
-    public Long getProductTypeId() {
-        return productTypeId;
+    public Long getProductCategoryId() {
+        return productCategoryId;
     }
 
-    public void setProductTypeId(Long productTypeId) {
-        this.productTypeId = productTypeId;
+    public void setProductCategoryId(Long productCategoryId) {
+        this.productCategoryId = productCategoryId;
     }
 
-    public String getProductTypeName() {
-        return productTypeName;
+    public String getProductCategoryName() {
+        return productCategoryName;
     }
 
-    public void setProductTypeName(String productTypeName) {
-        this.productTypeName = productTypeName;
+    public void setProductCategoryName(String productCategoryName) {
+        this.productCategoryName = productCategoryName;
     }
 
     public Long getProductColourId() {

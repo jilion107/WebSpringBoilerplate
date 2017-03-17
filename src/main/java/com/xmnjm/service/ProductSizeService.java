@@ -37,8 +37,7 @@ public class ProductSizeService {
     @Transactional
     public void delete(Long id) {
         ProductSize productSize = findById(id);
-        productSize.setStatus(0);
-        update(productSize);
+        productSizeDao.delete(productSize);
     }
 
     public ProductSize findById(Long id) {
@@ -51,8 +50,8 @@ public class ProductSizeService {
         productSizeDao.update(productSize);
     }
 
-    public List<ProductSize> findByName(String name) {
-        return productSizeDao.findByName(name);
+    public List<ProductSize> findBySizeName(String sizeName) {
+        return productSizeDao.findBySizeName(sizeName);
     }
 
     @Transactional

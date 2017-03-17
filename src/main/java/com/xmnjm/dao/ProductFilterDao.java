@@ -34,17 +34,25 @@ public class ProductFilterDao {
         return jpaAccess.findOne(Query.create("from ProductFilter where status=1 and id=:id").param("id", id));
     }
 
-    public List<ProductFilter> findByType(Long productTypeId) {
-        return jpaAccess.find(Query.create("from ProductFilter where status=1 and productTypeId=:productTypeId").param("productTypeId", productTypeId));
+    public List<ProductFilter> findByProductCategoryId(Long productCategoryId) {
+        return jpaAccess.find(Query.create("from ProductFilter where status=1 and productCategoryId=:productCategoryId").param("productCategoryId", productCategoryId));
     }
 
-    public List<ProductFilter> find(Long productTypeId, Long productColourId, Long productSizeId) {
-        return jpaAccess.find(Query.create("from ProductFilter where status=1 and productTypeId=:productTypeId and productColourId=:productColourId and productSizeId=:productSizeId").param("productTypeId", productTypeId).param("productColourId", productColourId).param("productSizeId", productSizeId));
+    public List<ProductFilter> findByProductColourId(Long productColourId) {
+        return jpaAccess.find(Query.create("from ProductFilter where status=1 and productColourId=:productColourId").param("productColourId", productColourId));
     }
 
-    public List<ProductFilter> find(String productTypeName, String productColourName, String productSizeName) {
-        return jpaAccess.find(Query.create("from ProductFilter where status=1 and (productTypeName=:productTypeName or productTypeName is null) and (productColourName=:productColourName or productColourName is null) and (productSizeName=:productSizeName or productSizeName is null)")
-            .param("productTypeName", productTypeName).param("productColourName", productColourName).param("productSizeName", productSizeName));
+    public List<ProductFilter> findByProductSizeId(Long productSizeId) {
+        return jpaAccess.find(Query.create("from ProductFilter where status=1 and productSizeId=:productSizeId").param("productSizeId", productSizeId));
+    }
+
+    public List<ProductFilter> find(Long productCategoryId, Long productColourId, Long productSizeId) {
+        return jpaAccess.find(Query.create("from ProductFilter where status=1 and productCategoryId=:productCategoryId and productColourId=:productColourId and productSizeId=:productSizeId").param("productCategoryId", productCategoryId).param("productColourId", productColourId).param("productSizeId", productSizeId));
+    }
+
+    public List<ProductFilter> find(String productCategoryName, String productColourName, String productSizeName) {
+        return jpaAccess.find(Query.create("from ProductFilter where status=1 and (productCategoryName=:productCategoryName or productCategoryName is null) and (productColourName=:productColourName or productColourName is null) and (productSizeName=:productSizeName or productSizeName is null)")
+            .param("productCategoryName", productCategoryName).param("productColourName", productColourName).param("productSizeName", productSizeName));
     }
 
 
@@ -53,7 +61,7 @@ public class ProductFilterDao {
         Boolean vIsDesc = null == isDesc ? Boolean.FALSE : isDesc;
         QueryBuilder queryBuilder = QueryBuilder.query("from ProductFilter").skipEmptyFields()
             .append("status", productFilter.getStatus())
-            .append("productTypeId", productFilter.getProductTypeId())
+            .append("productCategoryId", productFilter.getProductCategoryId())
             .append("productColourId", productFilter.getProductColourId())
             .append("productSizeId", productFilter.getProductSizeId())
             .orderBy(vOrderField, vIsDesc);
@@ -63,9 +71,13 @@ public class ProductFilterDao {
     public int count(ProductFilter productFilter) {
         QueryBuilder queryBuilder = QueryBuilder.query("select count(*) from ProductFilter").skipEmptyFields()
             .append("status", productFilter.getStatus())
-            .append("productTypeId", productFilter.getProductTypeId())
+            .append("productCategoryId", productFilter.getProductCategoryId())
             .append("productColourId", productFilter.getProductColourId())
             .append("productSizeId", productFilter.getProductSizeId());
         return Integer.parseInt(jpaAccess.find(queryBuilder.build()).get(0).toString());
+    }
+
+    public void delete(ProductFilter productFilter) {
+        jpaAccess.delete(productFilter);
     }
 }

@@ -10,14 +10,14 @@ import java.util.Date;
  *         侵权词表
  */
 @Entity
-public class Tort {
+public class TortWord {
     @Id
     @GeneratedValue
     private Long id;
 
     private Integer status;
 
-    private String name;
+    private String tortWordName;
 
     private Date createTime;
 
@@ -31,12 +31,12 @@ public class Tort {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTortWordName() {
+        return tortWordName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTortWordName(String tortWordName) {
+        this.tortWordName = tortWordName;
     }
 
     public Integer getStatus() {

@@ -1,11 +1,8 @@
 package com.xmnjm.service;
 
 import com.xmnjm.bean.Products;
-import com.xmnjm.model.FormalProducts;
-import com.xmnjm.model.ProductFilter;
-import com.xmnjm.model.TmpProducts;
-import com.xmnjm.model.Tort;
-import com.xmnjm.model.TortProducts;
+import com.xmnjm.model.*;
+import com.xmnjm.model.TortWord;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -37,7 +34,7 @@ public class ExcelOperateService {
     @Inject
     ProductFilterService productFilterService;
     @Inject
-    TortService tortService;
+    TortWordService tortWordService;
 
 
     public void readXml(CommonsMultipartFile file, Integer scenarioWhat) {
@@ -232,7 +229,7 @@ public class ExcelOperateService {
         String brand = null;
         if (row.getCell(1) != null && StringUtils.hasText(row.getCell(1).toString())) brand = row.getCell(1).toString().trim();
         if (brand == null) return false;
-        List<Tort> torts = tortService.findByName(brand);
-        return !CollectionUtils.isEmpty(torts);
+        List<TortWord> tortWords = tortWordService.findByTortWordName(brand);
+        return !CollectionUtils.isEmpty(tortWords);
     }
 }

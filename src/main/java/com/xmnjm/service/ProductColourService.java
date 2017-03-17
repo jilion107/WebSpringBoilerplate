@@ -38,8 +38,7 @@ public class ProductColourService {
     @Transactional
     public void delete(Long id) {
         ProductColour productColour = findById(id);
-        productColour.setStatus(0);
-        update(productColour);
+        productColourDao.delete(productColour);
     }
 
     public ProductColour findById(Long id) {
@@ -52,8 +51,8 @@ public class ProductColourService {
         productColourDao.update(productColour);
     }
 
-    public List<ProductColour> findByName(String name) {
-        return productColourDao.findByName(name);
+    public List<ProductColour> findByColourName(String colourName) {
+        return productColourDao.findByColourName(colourName);
     }
 
     @Transactional

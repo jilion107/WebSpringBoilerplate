@@ -34,8 +34,8 @@ public class ProductColourDao {
         return jpaAccess.findOne(Query.create("from ProductColour where status=1 and id=:id").param("id", id));
     }
 
-    public List<ProductColour> findByName(String name) {
-        return jpaAccess.find(Query.create("from ProductColour where status=1 and name=:name").param("name", name));
+    public List<ProductColour> findByColourName(String colourName) {
+        return jpaAccess.find(Query.create("from ProductColour where status=1 and colourName=:colourName").param("colourName", colourName));
     }
 
     public List<ProductColour> list(ProductColour productColour, int offset, int fetchSize, String orderField, Boolean isDesc) {
@@ -52,5 +52,9 @@ public class ProductColourDao {
         QueryBuilder queryBuilder = QueryBuilder.query("select count(*) from ProductColour").skipEmptyFields()
             .append("status", productColour.getStatus());
         return Integer.parseInt(jpaAccess.find(queryBuilder.build()).get(0).toString());
+    }
+
+    public void delete(ProductColour productColour) {
+        jpaAccess.delete(productColour);
     }
 }

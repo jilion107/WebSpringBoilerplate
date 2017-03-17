@@ -10,12 +10,12 @@ import java.util.Date;
  *         分类表
  */
 @Entity
-public class ProductType {
+public class ProductCategory {
     @Id
     @GeneratedValue
     private Long id;
 
-    private String name;
+    private String categoryName;
 
     private Integer status;
 
@@ -31,12 +31,12 @@ public class ProductType {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public Integer getStatus() {

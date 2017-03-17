@@ -15,7 +15,7 @@ public class ProductColour {
     @GeneratedValue
     private Long id;
 
-    private String name;
+    private String colourName;
 
     private Integer status;
 
@@ -31,12 +31,12 @@ public class ProductColour {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getColourName() {
+        return colourName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setColourName(String colourName) {
+        this.colourName = colourName;
     }
 
     public Integer getStatus() {

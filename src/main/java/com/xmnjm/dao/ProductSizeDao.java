@@ -34,8 +34,8 @@ public class ProductSizeDao {
         return jpaAccess.findOne(Query.create("from ProductSize where status=1 and id=:id").param("id", id));
     }
 
-    public List<ProductSize> findByName(String name) {
-        return jpaAccess.find(Query.create("from ProductSize where status=1 and name=:name").param("name", name));
+    public List<ProductSize> findBySizeName(String sizeName) {
+        return jpaAccess.find(Query.create("from ProductSize where status=1 and sizeName=:sizeName").param("sizeName", sizeName));
     }
 
     public List<ProductSize> list(ProductSize productSize, int offset, int fetchSize, String orderField, Boolean isDesc) {
@@ -51,5 +51,9 @@ public class ProductSizeDao {
         QueryBuilder queryBuilder = QueryBuilder.query("select count(*) from ProductSize").skipEmptyFields()
             .append("status", productSize.getStatus());
         return Integer.parseInt(jpaAccess.find(queryBuilder.build()).get(0).toString());
+    }
+
+    public void delete(ProductSize productSize) {
+        jpaAccess.delete(productSize);
     }
 }
