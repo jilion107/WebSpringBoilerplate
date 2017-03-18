@@ -9,6 +9,7 @@ import com.xmnjm.service.ProductColourService;
 import com.xmnjm.service.ProductFilterService;
 import com.xmnjm.service.ProductSizeService;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -54,6 +55,12 @@ public class ProductFilterController {
             result.put("result", "fail");
             result.put("message", "过滤器已经存在！");
         } else {
+            ProductCategory category = productCategoryService.findById(productFilter.getProductCategoryId());
+            ProductColour colour = productColourService.findById(productFilter.getProductColourId());
+            ProductSize size = productSizeService.findById(productFilter.getProductSizeId());
+            productFilter.setProductCategoryName(category.getCategoryName());
+            productFilter.setProductColourName(colour.getColourName());
+            productFilter.setProductSizeName(size.getSizeName());
             productFilterService.save(productFilter);
             result.put("result", "success");
             result.put("filter",productFilter);
@@ -83,6 +90,9 @@ public class ProductFilterController {
             ProductCategory prdctCtgry = productCategoryService.findById(productFilter.getProductCategoryId());
             ProductColour prdctClr = productColourService.findById(productFilter.getProductColourId());
             ProductSize prdctSz = productSizeService.findById(productFilter.getProductSizeId());
+            prdctFltr.setProductCategoryId(productFilter.getProductCategoryId());
+            prdctFltr.setProductColourId(productFilter.getProductColourId());
+            prdctFltr.setProductSizeId(productFilter.getProductSizeId());
             prdctFltr.setProductCategoryName(prdctCtgry.getCategoryName());
             prdctFltr.setProductColourName(prdctClr.getColourName());
             prdctFltr.setProductSizeName(prdctSz.getSizeName());
