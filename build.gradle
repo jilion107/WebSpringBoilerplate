@@ -34,6 +34,7 @@ dependencies {
     compile('com.google.guava:guava:21.0', 'javax.inject:javax.inject:1')
     compile('org.apache.poi:poi:3.15', "org.apache.poi:poi-ooxml:3.15", "dom4j:dom4j:1.6.1")
     compile('com.google.code.gson:gson:2.8.0')
+    compile ('io.jsonwebtoken:jjwt:0.7.0')
     runtime('mysql:mysql-connector-java')
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
