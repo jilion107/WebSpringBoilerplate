@@ -25,7 +25,7 @@ public class WebSpringBoilerplateApplication {
 		HTTPAuthorizeAttribute httpBearerFilter = new HTTPAuthorizeAttribute();
 		registrationBean.setFilter(httpBearerFilter);
 		List<String> urlPatterns = new ArrayList<String>();
-		urlPatterns.add("/user/getusers");
+		urlPatterns.add("/api/*");
 		registrationBean.setUrlPatterns(urlPatterns);
 		return registrationBean;
 	}

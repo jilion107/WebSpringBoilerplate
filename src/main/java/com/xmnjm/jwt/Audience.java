@@ -12,6 +12,7 @@ public class Audience {
     private String base64Secret;
     private String name;
     private int expiresSecond;
+    private String excludeUri;
 
     public String getClientId() {
         return clientId;
@@ -43,5 +44,13 @@ public class Audience {
 
     public void setExpiresSecond(int expiresSecond) {
         this.expiresSecond = expiresSecond;
+    }
+
+    public String getExcludeUri() {
+        return excludeUri;
+    }
+
+    public void setExcludeUri(String excludeUri) {
+        this.excludeUri = excludeUri;
     }
 }

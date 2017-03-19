@@ -2,10 +2,12 @@ package com.xmnjm.jwt;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by jilion.chen on 3/18/2017.
  */
+@Component
 public class JsonWebToken {
     @Autowired
     private Audience audienceEntity;

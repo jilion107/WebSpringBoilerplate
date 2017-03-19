@@ -3,6 +3,7 @@ package com.xmnjm.controller;
 import com.xmnjm.bean.LoginRequest;
 import com.xmnjm.bean.UserResponse;
 import com.xmnjm.jwt.AccessToken;
+import com.xmnjm.jwt.Audience;
 import com.xmnjm.jwt.JsonWebToken;
 import com.xmnjm.model.User;
 import com.xmnjm.service.UserService;
@@ -25,6 +26,10 @@ import java.util.Map;
 public class LoginController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private Audience audienceEntity;
+    @Autowired
+    private JsonWebToken jsonWebToken;
 
     @RequestMapping(value = "/api/login", method = RequestMethod.POST)
     @ResponseBody
@@ -42,7 +47,6 @@ public class LoginController {
             result.put("message", "手机号或密码错误！");
             return result;
         }
-        JsonWebToken jsonWebToken = new JsonWebToken();
         Object accessToken = jsonWebToken.getAccessToken(loginRequest.getLoginName(), loginRequest.getPassword());
         result.put("result", "success");
         result.put("user", user);

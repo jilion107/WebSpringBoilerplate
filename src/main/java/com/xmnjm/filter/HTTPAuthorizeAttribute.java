@@ -32,16 +32,19 @@ public class HTTPAuthorizeAttribute implements Filter{
             throws IOException, ServletException {
         Map<String, Object> result = new HashMap<>();
         HttpServletRequest httpRequest = (HttpServletRequest)request;
+        String requestUri = httpRequest.getRequestURI();
+        String excludeUri = audienceEntity.getExcludeUri();
+        if (requestUri.indexOf(excludeUri) > -1) {
+            chain.doFilter(request, response);
+            return;
+        }
         String auth = httpRequest.getHeader("Authorization");
-        if ((auth != null) && (auth.length() > 7))
-        {
+        if ((auth != null) && (auth.length() > 7)) {
             String HeadStr = auth.substring(0, 6).toLowerCase();
-            if (HeadStr.compareTo("bearer") == 0)
-            {
+            if (HeadStr.compareTo("bearer") == 0) {
 
                 auth = auth.substring(7, auth.length());
-                if (JwtHelper.parseJWT(auth, audienceEntity.getBase64Secret()) != null)
-                {
+                if (JwtHelper.parseJWT(auth, audienceEntity.getBase64Secret()) != null) {
                     chain.doFilter(request, response);
                     return;
                 }
