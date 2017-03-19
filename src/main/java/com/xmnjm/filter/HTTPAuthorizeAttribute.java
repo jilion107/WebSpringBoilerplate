@@ -32,26 +32,26 @@ public class HTTPAuthorizeAttribute implements Filter{
             throws IOException, ServletException {
         Map<String, Object> result = new HashMap<>();
         HttpServletRequest httpRequest = (HttpServletRequest)request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
         String requestUri = httpRequest.getRequestURI();
         String excludeUri = audienceEntity.getExcludeUri();
         if (requestUri.indexOf(excludeUri) > -1) {
             chain.doFilter(request, response);
             return;
         }
+        if ("OPTIONS".equals(httpRequest.getMethod())) {
+            chain.doFilter(request, response);
+            return;
+        }
         String auth = httpRequest.getHeader("Authorization");
-        if ((auth != null) && (auth.length() > 7)) {
-            String HeadStr = auth.substring(0, 6).toLowerCase();
-            if (HeadStr.compareTo("bearer") == 0) {
-
-                auth = auth.substring(7, auth.length());
-                if (JwtHelper.parseJWT(auth, audienceEntity.getBase64Secret()) != null) {
-                    chain.doFilter(request, response);
-                    return;
-                }
+        if (auth != null) {
+            if (JwtHelper.parseJWT(auth, audienceEntity.getBase64Secret()) != null) {
+                chain.doFilter(request, response);
+                return;
             }
         }
 
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
+
         httpResponse.setCharacterEncoding("UTF-8");
         httpResponse.setContentType("application/json; charset=utf-8");
         httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

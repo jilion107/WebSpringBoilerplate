@@ -27,9 +27,7 @@ public class JwtHelper {
         }
     }
 
-    public static String createJWT(String userName, String password,
-                                   String audience, String issuer, long TTLMillis, String base64Security)
-    {
+    public static String createJWT(String userName, String issuer, long TTLMillis, String base64Security) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
         long nowMillis = System.currentTimeMillis();
@@ -41,10 +39,8 @@ public class JwtHelper {
 
         //add JWT parameter
         JwtBuilder builder = Jwts.builder().setHeaderParam("typ", "JWT")
-                .claim("unique_name", userName)
-                .claim("userid", password)
+                .claim("userName", userName)
                 .setIssuer(issuer)
-                .setAudience(audience)
                 .signWith(signatureAlgorithm, signingKey);
         //add expired time
         if (TTLMillis >= 0) {

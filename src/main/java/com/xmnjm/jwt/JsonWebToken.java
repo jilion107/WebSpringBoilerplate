@@ -1,7 +1,6 @@
 package com.xmnjm.jwt;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,14 +18,14 @@ public class JsonWebToken {
             }
 
             //拼装accessToken
-            String accessToken = JwtHelper.createJWT(userName, password, audienceEntity.getClientId(), audienceEntity.getName(),
+            String accessToken = JwtHelper.createJWT(userName, audienceEntity.getName(),
                     audienceEntity.getExpiresSecond() * 1000, audienceEntity.getBase64Secret());
 
             //返回accessToken
             AccessToken accessTokenEntity = new AccessToken();
-            accessTokenEntity.setAccess_token(accessToken);
-            accessTokenEntity.setExpires_in(audienceEntity.getExpiresSecond());
-            accessTokenEntity.setToken_type("restful");
+            accessTokenEntity.setAccessToken(accessToken);
+            accessTokenEntity.setExpiresIn(audienceEntity.getExpiresSecond());
+            accessTokenEntity.setTokenType("restful");
             return accessTokenEntity;
 
         }
