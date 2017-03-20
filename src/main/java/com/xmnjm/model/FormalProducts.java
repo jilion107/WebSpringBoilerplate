@@ -3,6 +3,7 @@ package com.xmnjm.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.Date;
 
 /**
@@ -59,7 +60,7 @@ public class FormalProducts {
     //价格
     private Double price;
 
-    private Double buyBoxPrice;
+    private String buyBoxPrice;
 
     private Double offer;
 
@@ -81,6 +82,9 @@ public class FormalProducts {
     private Date createTime;
 
     private Date updateTime;
+
+    @Transient
+    private Boolean checked = false;
 
     public Long getId() {
         return id;
@@ -210,11 +214,11 @@ public class FormalProducts {
         this.price = price;
     }
 
-    public Double getBuyBoxPrice() {
+    public String getBuyBoxPrice() {
         return buyBoxPrice;
     }
 
-    public void setBuyBoxPrice(Double buyBoxPrice) {
+    public void setBuyBoxPrice(String buyBoxPrice) {
         this.buyBoxPrice = buyBoxPrice;
     }
 
@@ -296,5 +300,13 @@ public class FormalProducts {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public Boolean getChecked() {
+        return checked;
+    }
+
+    public void setChecked(Boolean checked) {
+        this.checked = checked;
     }
 }

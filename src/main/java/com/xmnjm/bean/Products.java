@@ -52,7 +52,7 @@ public class Products {
     //价格
     private Double price;
 
-    private Double buyBoxPrice;
+    private String buyBoxPrice;
 
     private Double offer;
 
@@ -203,11 +203,11 @@ public class Products {
         this.price = price;
     }
 
-    public Double getBuyBoxPrice() {
+    public String getBuyBoxPrice() {
         return buyBoxPrice;
     }
 
-    public void setBuyBoxPrice(Double buyBoxPrice) {
+    public void setBuyBoxPrice(String buyBoxPrice) {
         this.buyBoxPrice = buyBoxPrice;
     }
 

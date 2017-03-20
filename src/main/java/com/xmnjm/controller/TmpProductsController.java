@@ -1,6 +1,5 @@
 package com.xmnjm.controller;
 
-import com.xmnjm.bean.FindResult;
 import com.xmnjm.bean.ProductRequest;
 import com.xmnjm.model.TmpProducts;
 import com.xmnjm.service.TmpProductsService;
@@ -21,8 +20,8 @@ import java.util.List;
  * @author mandy.huang
  *         临时库管理
  */
+@CrossOrigin(origins = "http://localhost:8082")
 @RestController
-@CrossOrigin(origins = "http://localhost:8080")
 public class TmpProductsController {
     @Inject
     TmpProductsService tmpProductsService;
@@ -64,11 +63,9 @@ public class TmpProductsController {
      */
     @RequestMapping(value = "/api/tmp-products/list", method = RequestMethod.POST)
     @ResponseBody
-    FindResult<TmpProducts> list(@Valid @RequestBody ProductRequest productRequest, @RequestParam(value = "offset", defaultValue = "0") int offset,
-                                 @RequestParam(value = "fetchSize", defaultValue = "20") int fetchSize) {
-        List<TmpProducts> tmpProductses = tmpProductsService.list(productRequest, offset, fetchSize);
-        Long total = tmpProductsService.count(productRequest);
-        return new FindResult<TmpProducts>(tmpProductses, offset, total);
+    List<TmpProducts> list(@Valid @RequestBody ProductRequest productRequest, @RequestParam(value = "offset", defaultValue = "0") int offset,
+                           @RequestParam(value = "fetchSize", defaultValue = "20") int fetchSize) {
+        return tmpProductsService.list(productRequest, offset, fetchSize);
     }
 
     @RequestMapping(value = "/api/tmp-products/count", method = RequestMethod.POST)

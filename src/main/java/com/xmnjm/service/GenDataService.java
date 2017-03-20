@@ -2,6 +2,7 @@ package com.xmnjm.service;
 
 import com.xmnjm.bean.ProductRequest;
 import com.xmnjm.dbcommon.Query;
+import com.xmnjm.util.DateUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -31,17 +32,21 @@ public class GenDataService {
             builder.append("and productTypeId=:productTypeId ");
             params.put("productTypeId", productRequest.getProductTypeId());
         }
+        if (StringUtils.hasText(productRequest.getProductTypeName())) {
+            builder.append("and productTypeName=:productTypeName ");
+            params.put("productTypeName", productRequest.getProductTypeName());
+        }
         if (productRequest.getScenarioWhat() != null) {
             builder.append("and scenarioWhat=:scenarioWhat ");
             params.put("scenarioWhat", productRequest.getScenarioWhat());
         }
         if (productRequest.getStartCreateTime() != null) {
-            builder.append("and createTime<=:startCreateTime ");
-            params.put("startCreateTime", productRequest.getStartCreateTime());
+            builder.append("and createTime>=:startCreateTime ");
+            params.put("startCreateTime", DateUtils.parse(productRequest.getStartCreateTime(), DateUtils.DATE_FORMAT_SHORT));
         }
         if (productRequest.getEndCreateTime() != null) {
-            builder.append("and createTime>=:endCreateTime ");
-            params.put("endCreateTime", productRequest.getEndCreateTime());
+            builder.append("and createTime<=:endCreateTime ");
+            params.put("endCreateTime", DateUtils.parse(productRequest.getEndCreateTime(), DateUtils.DATE_FORMAT_SHORT));
         }
         if (!CollectionUtils.isEmpty(productRequest.getProductSizes())) {
             builder.append("and (");
@@ -61,6 +66,7 @@ public class GenDataService {
             }
             builder.append(") ");
         }
+        builder.append("order by id desc ");
         Query query = Query.create(builder.toString());
         Iterator<String> it = params.keySet().iterator();
         while (it.hasNext()) {

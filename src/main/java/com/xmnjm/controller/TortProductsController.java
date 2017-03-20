@@ -1,6 +1,5 @@
 package com.xmnjm.controller;
 
-import com.xmnjm.bean.FindResult;
 import com.xmnjm.bean.ProductRequest;
 import com.xmnjm.model.TortProducts;
 import com.xmnjm.service.TortProductsService;
@@ -23,7 +22,7 @@ import java.util.List;
  * @author mandy.huang
  */
 @RestController
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://localhost:8082")
 public class TortProductsController {
     @Inject
     TortProductsService tortProductsService;
@@ -65,13 +64,9 @@ public class TortProductsController {
      */
     @RequestMapping(value = "/api/tort-products/list", method = RequestMethod.POST)
     @ResponseBody
-    FindResult<TortProducts> list(@Valid @RequestBody ProductRequest productRequest, @RequestParam(value = "offset", defaultValue = "0") int offset,
-                                  @RequestParam(value = "fetchSize", defaultValue = "20") int fetchSize) {
-        TortProducts tortProducts = new TortProducts();
-        BeanUtils.copyProperties(productRequest, tortProducts);
-        List<TortProducts> tortProductses = tortProductsService.list(productRequest, offset, fetchSize);
-        Long total = tortProductsService.count(productRequest);
-        return new FindResult<TortProducts>(tortProductses, offset, total);
+    List<TortProducts> list(@Valid @RequestBody ProductRequest productRequest, @RequestParam(value = "offset", defaultValue = "0") int offset,
+                            @RequestParam(value = "fetchSize", defaultValue = "20") int fetchSize) {
+        return tortProductsService.list(productRequest, offset, fetchSize);
     }
 
     @RequestMapping(value = "/api/tort-products/count", method = RequestMethod.POST)
@@ -90,7 +85,7 @@ public class TortProductsController {
      */
     @RequestMapping(value = "/api/tort-products/scenarioWhat/{id}", method = RequestMethod.GET)
     @ResponseBody
-    TortProducts update(@PathVariable Long id,HttpServletRequest request) {
+    TortProducts update(@PathVariable Long id, HttpServletRequest request) {
         TortProducts tortProducts = tortProductsService.findById(id);
         tortProductsService.update(tortProducts);
         return tortProducts;

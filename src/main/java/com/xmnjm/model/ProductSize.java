@@ -3,6 +3,7 @@ package com.xmnjm.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.Date;
 
 /**
@@ -22,6 +23,9 @@ public class ProductSize {
     private Date createTime;
 
     private Date updateTime;
+
+    @Transient
+    private Boolean checked = false;
 
     public Long getId() {
         return id;
@@ -61,5 +65,13 @@ public class ProductSize {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Boolean getChecked() {
+        return checked;
+    }
+
+    public void setChecked(Boolean checked) {
+        this.checked = checked;
     }
 }

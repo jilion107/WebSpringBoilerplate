@@ -1,6 +1,5 @@
 package com.xmnjm.bean;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -10,10 +9,11 @@ public class ProductRequest {
     private String brand;
     private String asin;
     private Long productTypeId;
+    private String productTypeName;
     private List<String> productColours;
     private List<String> productSizes;
-    private Date startCreateTime;
-    private Date endCreateTime;
+    private String startCreateTime;
+    private String endCreateTime;
     private Integer scenarioWhat;
 
     public String getBrand() {
@@ -56,19 +56,19 @@ public class ProductRequest {
         this.productSizes = productSizes;
     }
 
-    public Date getStartCreateTime() {
+    public String getStartCreateTime() {
         return startCreateTime;
     }
 
-    public void setStartCreateTime(Date startCreateTime) {
+    public void setStartCreateTime(String startCreateTime) {
         this.startCreateTime = startCreateTime;
     }
 
-    public Date getEndCreateTime() {
+    public String getEndCreateTime() {
         return endCreateTime;
     }
 
-    public void setEndCreateTime(Date endCreateTime) {
+    public void setEndCreateTime(String endCreateTime) {
         this.endCreateTime = endCreateTime;
     }
 
@@ -78,5 +78,13 @@ public class ProductRequest {
 
     public void setScenarioWhat(Integer scenarioWhat) {
         this.scenarioWhat = scenarioWhat;
+    }
+
+    public String getProductTypeName() {
+        return productTypeName;
+    }
+
+    public void setProductTypeName(String productTypeName) {
+        this.productTypeName = productTypeName;
     }
 }

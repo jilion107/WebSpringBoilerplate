@@ -1,6 +1,5 @@
 package com.xmnjm.controller;
 
-import com.xmnjm.bean.FindResult;
 import com.xmnjm.bean.ProductRequest;
 import com.xmnjm.bean.ProductsIdRequest;
 import com.xmnjm.model.FormalProducts;
@@ -25,7 +24,7 @@ import java.util.List;
  *         正式库
  */
 @RestController
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://localhost:8082")
 public class FormalProductsController {
     @Inject
     FormalProductsService formalProductsService;
@@ -67,13 +66,9 @@ public class FormalProductsController {
      */
     @RequestMapping(value = "/api/formal-products/list", method = RequestMethod.POST)
     @ResponseBody
-    FindResult<FormalProducts> list(@Valid @RequestBody ProductRequest productRequest, @RequestParam(value = "offset", defaultValue = "0") int offset,
-                                    @RequestParam(value = "fetchSize", defaultValue = "20") int fetchSize) {
-        FormalProducts formalProducts = new FormalProducts();
-        BeanUtils.copyProperties(productRequest, formalProducts);
-        List<FormalProducts> formalProductses = formalProductsService.list(productRequest, offset, fetchSize);
-        Long total = formalProductsService.count(productRequest);
-        return new FindResult<FormalProducts>(formalProductses, offset, total);
+    List<FormalProducts> list(@Valid @RequestBody ProductRequest productRequest, @RequestParam(value = "offset", defaultValue = "0") int offset,
+                              @RequestParam(value = "fetchSize", defaultValue = "20") int fetchSize) {
+        return formalProductsService.list(productRequest, offset, fetchSize);
     }
 
     @RequestMapping(value = "/api/formal-products/count", method = RequestMethod.POST)
@@ -100,7 +95,7 @@ public class FormalProductsController {
      *
      * @param productsIdRequest
      */
-    @RequestMapping(value = "/api/formal-products/multi/{productTypeId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/formal-products/batch/{productTypeId}", method = RequestMethod.POST)
     @ResponseBody
     void save(@Valid @RequestBody ProductsIdRequest productsIdRequest, @PathVariable("productTypeId") Long productTypeId) {
         List<Long> productIds = productsIdRequest.getProductIds();
