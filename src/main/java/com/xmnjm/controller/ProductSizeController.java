@@ -43,50 +43,68 @@ public class ProductSizeController {
     @ResponseBody
     Object save(@Valid @RequestBody ProductSize productSize) {
         Map<String, Object> result = new HashMap<>();
-        List<ProductSize> productSizes = productSizeService.findBySizeName(productSize.getSizeName());
-        if (!CollectionUtils.isEmpty(productSizes)) {
+        try {
+            List<ProductSize> productSizes = productSizeService.findBySizeName(productSize.getSizeName());
+            if (!CollectionUtils.isEmpty(productSizes)) {
+                result.put("result", "fail");
+                result.put("message", "尺寸已经存在！");
+            } else {
+                productSizeService.save(productSize);
+                result.put("result", "success");
+                result.put("size",productSize);
+            }
+            return result;
+        } catch (Exception ex) {
             result.put("result", "fail");
-            result.put("message", "尺寸已经存在！");
-        } else {
-            productSizeService.save(productSize);
-            result.put("result", "success");
-            result.put("size",productSize);
+            result.put("message", "系统异常！");
+            return result;
         }
-        return result;
     }
 
     @RequestMapping(value = "/api/sizes/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     Object delete(@PathVariable("id") Long id) {
         Map<String, Object> result = new HashMap<>();
-        List<ProductFilter> productFilters = productFilterService.findByProductSizeId(id);
-        if(CollectionUtils.isEmpty(productFilters)) {
-            productSizeService.delete(id);
-            result.put("result", "success");
-        } else {
+        try {
+            List<ProductFilter> productFilters = productFilterService.findByProductSizeId(id);
+            if(CollectionUtils.isEmpty(productFilters)) {
+                productSizeService.delete(id);
+                result.put("result", "success");
+            } else {
+                result.put("result", "fail");
+                result.put("message", "请先删除或修改关联的过滤！");
+            }
+            return result;
+        } catch (Exception ex) {
             result.put("result", "fail");
-            result.put("message", "请先删除或修改关联的过滤！");
+            result.put("message", "系统异常！");
+            return result;
         }
-        return result;
     }
 
     @RequestMapping(value = "/api/sizes/{id}", method = RequestMethod.PUT)
     @ResponseBody
     Object update(@Valid @RequestBody ProductSize productSize) {
         Map<String, Object> result = new HashMap<>();
-        String sizeName = productSize.getSizeName();
-        List<ProductSize> productSizes = productSizeService.findBySizeName(sizeName);
-        if(!CollectionUtils.isEmpty(productSizes)) {
+        try {
+            String sizeName = productSize.getSizeName();
+            List<ProductSize> productSizes = productSizeService.findBySizeName(sizeName);
+            if(!CollectionUtils.isEmpty(productSizes)) {
+                result.put("result", "fail");
+                result.put("message", "尺寸名不能重复！");
+            } else {
+                ProductSize prdctSz =productSizeService.findById(productSize.getId());
+                prdctSz.setSizeName(productSize.getSizeName());
+                productSizeService.update(prdctSz);
+                result.put("result", "success");
+                result.put("size", prdctSz);
+            }
+            return result;
+        } catch (Exception ex) {
             result.put("result", "fail");
-            result.put("message", "尺寸名不能重复！");
-        } else {
-            ProductSize prdctSz =productSizeService.findById(productSize.getId());
-            prdctSz.setSizeName(productSize.getSizeName());
-            productSizeService.update(prdctSz);
-            result.put("result", "success");
-            result.put("size", prdctSz);
+            result.put("message", "系统异常！");
+            return result;
         }
-        return result;
     }
 
     @RequestMapping(value = "/api/product-size", method = RequestMethod.GET)

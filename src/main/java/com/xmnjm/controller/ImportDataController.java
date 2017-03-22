@@ -21,9 +21,13 @@ public class ImportDataController {
 
     @RequestMapping(value = "/api/upload", method = RequestMethod.POST)
     public void upload(@RequestParam("file") CommonsMultipartFile file, @RequestParam("scenarioWhat") Integer scenarioWhat) {
-        //String fileName = "D:\\fannieERP\\妹娇卫衣采集器采集过(1).xls";
-        //excelOperateService.readXml(fileName, 0);
-        excelOperateService.readXml(file, scenarioWhat);
+        try {
+            //String fileName = "D:\\fannieERP\\妹娇卫衣采集器采集过(1).xls";
+            //excelOperateService.readXml(fileName, 0);
+            excelOperateService.readXml(file, scenarioWhat);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @RequestMapping(value = "/api/upload/test", method = RequestMethod.GET)

@@ -50,57 +50,88 @@ public class ProductFilterController {
     @ResponseBody
     Object save(@Valid @RequestBody ProductFilter productFilter) {
         Map<String, Object> result = new HashMap<>();
-        List<ProductFilter> productFilters = productFilterService.find(productFilter.getProductCategoryId(), productFilter.getProductColourId(), productFilter.getProductSizeId());
-        if (!CollectionUtils.isEmpty(productFilters)) {
+        try{
+            List<ProductFilter> productFilters = productFilterService.find(productFilter.getProductCategoryId(), productFilter.getProductColourId(), productFilter.getProductSizeId());
+            if (!CollectionUtils.isEmpty(productFilters)) {
+                result.put("result", "fail");
+                result.put("message", "过滤器已经存在！");
+            } else {
+                ProductCategory category = productCategoryService.findById(productFilter.getProductCategoryId());
+                ProductColour colour = productColourService.findById(productFilter.getProductColourId());
+                ProductSize size = productSizeService.findById(productFilter.getProductSizeId());
+                if(category != null) {
+                    productFilter.setProductCategoryName(category.getCategoryName());
+                }
+                if(colour != null) {
+                    productFilter.setProductColourName(colour.getColourName());
+                }
+                if(size != null) {
+                    productFilter.setProductSizeName(size.getSizeName());
+                }
+                productFilterService.save(productFilter);
+                result.put("result", "success");
+                result.put("filter",productFilter);
+            }
+            return result;
+        } catch (Exception ex) {
             result.put("result", "fail");
-            result.put("message", "过滤器已经存在！");
-        } else {
-            ProductCategory category = productCategoryService.findById(productFilter.getProductCategoryId());
-            ProductColour colour = productColourService.findById(productFilter.getProductColourId());
-            ProductSize size = productSizeService.findById(productFilter.getProductSizeId());
-            productFilter.setProductCategoryName(category.getCategoryName());
-            productFilter.setProductColourName(colour.getColourName());
-            productFilter.setProductSizeName(size.getSizeName());
-            productFilterService.save(productFilter);
-            result.put("result", "success");
-            result.put("filter",productFilter);
+            result.put("message", "系统异常！");
+            return result;
         }
-        return result;
     }
 
     @RequestMapping(value = "/api/filters/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     Object delete(@PathVariable("id") Long id) {
         Map<String, Object> result = new HashMap<>();
-        productFilterService.delete(id);
-        result.put("result", "success");
-        return result;
+        try {
+            productFilterService.delete(id);
+            result.put("result", "success");
+            return result;
+        } catch (Exception ex) {
+            result.put("result", "fail");
+            result.put("message", "系统异常！");
+            return result;
+        }
     }
 
     @RequestMapping(value = "/api/filters/{id}", method = RequestMethod.PUT)
     @ResponseBody
     Object update(@Valid @RequestBody ProductFilter productFilter) {
         Map<String, Object> result = new HashMap<>();
-        List<ProductFilter> productFilters = productFilterService.find(productFilter.getProductCategoryId(), productFilter.getProductColourId(), productFilter.getProductSizeId());
-        if(!CollectionUtils.isEmpty(productFilters)) {
+        try {
+            List<ProductFilter> productFilters = productFilterService.find(productFilter.getProductCategoryId(), productFilter.getProductColourId(), productFilter.getProductSizeId());
+            if(!CollectionUtils.isEmpty(productFilters)) {
+                result.put("result", "fail");
+                result.put("message", "过滤器已经存在！");
+            } else {
+                ProductFilter prdctFltr = productFilterService.findById(productFilter.getId());
+                ProductCategory category = productCategoryService.findById(productFilter.getProductCategoryId());
+                ProductColour colour = productColourService.findById(productFilter.getProductColourId());
+                ProductSize size = productSizeService.findById(productFilter.getProductSizeId());
+                if(category != null) {
+                    prdctFltr.setProductCategoryId(productFilter.getProductCategoryId());
+                    prdctFltr.setProductCategoryName(category.getCategoryName());
+                }
+                if(colour != null) {
+                    prdctFltr.setProductColourId(productFilter.getProductColourId());
+                    prdctFltr.setProductColourName(colour.getColourName());
+                }
+                if(size != null) {
+                    prdctFltr.setProductSizeId(productFilter.getProductSizeId());
+                    prdctFltr.setProductSizeName(size.getSizeName());
+                }
+                productFilterService.update(prdctFltr);
+                result.put("result", "success");
+                result.put("filter", prdctFltr);
+            }
+            return result;
+
+        } catch (Exception ex) {
             result.put("result", "fail");
-            result.put("message", "过滤器已经存在！");
-        } else {
-            ProductFilter prdctFltr = productFilterService.findById(productFilter.getId());
-            ProductCategory prdctCtgry = productCategoryService.findById(productFilter.getProductCategoryId());
-            ProductColour prdctClr = productColourService.findById(productFilter.getProductColourId());
-            ProductSize prdctSz = productSizeService.findById(productFilter.getProductSizeId());
-            prdctFltr.setProductCategoryId(productFilter.getProductCategoryId());
-            prdctFltr.setProductColourId(productFilter.getProductColourId());
-            prdctFltr.setProductSizeId(productFilter.getProductSizeId());
-            prdctFltr.setProductCategoryName(prdctCtgry.getCategoryName());
-            prdctFltr.setProductColourName(prdctClr.getColourName());
-            prdctFltr.setProductSizeName(prdctSz.getSizeName());
-            productFilterService.update(prdctFltr);
-            result.put("result", "success");
-            result.put("filter", prdctFltr);
+            result.put("message", "系统异常！");
+            return result;
         }
-        return result;
     }
 
     @RequestMapping(value = "/api/product-filter/type/{productTypeId}", method = RequestMethod.GET)

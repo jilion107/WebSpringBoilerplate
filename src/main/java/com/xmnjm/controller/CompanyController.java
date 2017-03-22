@@ -34,52 +34,70 @@ public class CompanyController {
 
     @RequestMapping(value = "/api/companies/{id}", method = RequestMethod.PUT)
     public @ResponseBody Object updateCompany(@RequestBody Company company){
-        String companyName = company.getCompanyName();
-        Company existCompany = companyService.findCompanyByName(companyName);
         Map<String, Object> result = new HashMap<>();
-        if(existCompany != null) {
+        try {
+            String companyName = company.getCompanyName();
+            Company existCompany = companyService.findCompanyByName(companyName);
+            if(existCompany != null) {
+                result.put("result", "fail");
+                result.put("message", "公司名不能重复！");
+            } else {
+                Company com =  companyService.getCompany(company.getId());
+                com.setCompanyName(companyName);
+                com.setUpdateTime(new Date());
+                result.put("result", "success");
+                result.put("company", companyService.updateCompany(com));
+            }
+            return result;
+        } catch (Exception ex) {
             result.put("result", "fail");
-            result.put("message", "公司名不能重复！");
-        } else {
-            Company com =  companyService.getCompany(company.getId());
-            com.setCompanyName(companyName);
-            com.setUpdateTime(new Date());
-            result.put("result", "success");
-            result.put("company", companyService.updateCompany(com));
+            result.put("message", "系统异常！");
+            return result;
         }
-        return result;
     }
 
     @RequestMapping(value = "/api/company", method = RequestMethod.POST)
     public @ResponseBody Object addCompany(@RequestBody Company company) {
-        String companyName = company.getCompanyName();
-        Company existCompany = companyService.findCompanyByName(companyName);
         Map<String, Object> result = new HashMap<>();
-        if(existCompany != null) {
+        try {
+            String companyName = company.getCompanyName();
+            Company existCompany = companyService.findCompanyByName(companyName);
+            if(existCompany != null) {
+                result.put("result", "fail");
+                result.put("message", "公司名不能重复！");
+            } else {
+                Company newCompany = new Company(company.getCompanyName());
+                newCompany.setStatus(COMPANY_STATUS_ACTIVED);
+                newCompany.setCreateTime(new Date());
+                newCompany.setUpdateTime(new Date());
+                result.put("result", "success");
+                result.put("company", companyService.addCompany(newCompany));
+            }
+            return result;
+        } catch (Exception ex) {
             result.put("result", "fail");
-            result.put("message", "公司名不能重复！");
-        } else {
-            Company newCompany = new Company(company.getCompanyName());
-            newCompany.setStatus(COMPANY_STATUS_ACTIVED);
-            newCompany.setCreateTime(new Date());
-            newCompany.setUpdateTime(new Date());
-            result.put("result", "success");
-            result.put("company", companyService.addCompany(newCompany));
+            result.put("message", "系统异常！");
+            return result;
         }
-        return result;
     }
 
     @RequestMapping(value="/api/companies/{id}", method = RequestMethod.DELETE)
     public @ResponseBody Object deleteCompany(@PathVariable Integer id){
         Map<String, Object> result = new HashMap<>();
-        List<User> users = userService.findByCompanyId(id);
-        if(users.isEmpty()) {
-            companyService.deleteCompany(id);
-            result.put("result", "success");
-        }else {
+        try {
+            List<User> users = userService.findByCompanyId(id);
+            if(users.isEmpty()) {
+                companyService.deleteCompany(id);
+                result.put("result", "success");
+            }else {
+                result.put("result", "fail");
+                result.put("message", "请先删除或修改属于此公司的用户！");
+            }
+            return result;
+        } catch (Exception ex) {
             result.put("result", "fail");
-            result.put("message", "请先删除或修改属于此公司的用户！");
+            result.put("message", "系统异常！");
+            return result;
         }
-        return result;
     }
 }
