@@ -38,46 +38,59 @@ public class UserController {
     @RequestMapping(value = "/api/users/{id}", method = RequestMethod.PUT)
     @ResponseBody
     public Object updateUser(@RequestBody User user) {
-        String loginName = user.getLoginName();
-        List<User> existUser = userService.findByLoginName(loginName);
         Map<String, Object> result = new HashMap<>();
-        if(existUser.isEmpty()) {
-            User newUser =  userService.getUser(user.getId());
-            Date newUserCreatedTime = newUser.getCreateTime();
-            Integer newUserStatue = newUser.getStatus();
-            BeanUtils.copyProperties(user, newUser);
-            newUser.setUpdateTime(new Date());
-            newUser.setPassword(user.getPhone());
-            newUser.setCreateTime(newUserCreatedTime);
-            newUser.setStatus(newUserStatue);
-            newUser.setUpdateTime(new Date());
-            result.put("result", "success");
-            result.put("user", userService.updateUser(newUser));
-        } else {
+        String loginName = user.getLoginName();
+        try {
+            List<User> existUser = userService.findByLoginName(loginName);
+            if(existUser.isEmpty()) {
+                User newUser =  userService.getUser(user.getId());
+                Date newUserCreatedTime = newUser.getCreateTime();
+                Integer newUserStatue = newUser.getStatus();
+                BeanUtils.copyProperties(user, newUser);
+                newUser.setUpdateTime(new Date());
+                newUser.setPassword(user.getPhone());
+                newUser.setCreateTime(newUserCreatedTime);
+                newUser.setStatus(newUserStatue);
+                newUser.setUpdateTime(new Date());
+                result.put("result", "success");
+                result.put("user", userService.updateUser(newUser));
+            } else {
+                result.put("result", "fail");
+                result.put("message", "登录名不能重复！");
+            }
+            return result;
+
+        } catch (Exception ex) {
             result.put("result", "fail");
-            result.put("message", "登录名不能重复！");
+            result.put("message", "系统异常！");
+            return result;
         }
-        return result;
     }
 
     @RequestMapping(value = "/api/user", method = RequestMethod.POST)
     @ResponseBody
     public Object register(@RequestBody User user) {
         Map<String, Object> result = new HashMap<>();
-        String loginName = user.getLoginName();
-        List<User> existUser = userService.findByLoginName(loginName);
-        if(existUser.isEmpty()) {
-            user.setPassword(user.getPhone());
-            user.setStatus(USER_STATUS_ACTIVED);
-            user.setCreateTime(new Date());
-            user.setUpdateTime(new Date());
-            result.put("result", "success");
-            result.put("user", userService.save(user));
-        } else {
+        try {
+            String loginName = user.getLoginName();
+            List<User> existUser = userService.findByLoginName(loginName);
+            if(existUser.isEmpty()) {
+                user.setPassword(user.getPhone());
+                user.setStatus(USER_STATUS_ACTIVED);
+                user.setCreateTime(new Date());
+                user.setUpdateTime(new Date());
+                result.put("result", "success");
+                result.put("user", userService.save(user));
+            } else {
+                result.put("result", "fail");
+                result.put("message", "登录名'" + loginName + "'已经存在！");
+            }
+            return result;
+        } catch (Exception ex) {
             result.put("result", "fail");
-            result.put("message", "登录名'" + loginName + "'已经存在！");
+            result.put("message", "系统异常！");
+            return result;
         }
-        return result;
     }
 
     @RequestMapping(value = "/api/users/{id}", method = RequestMethod.GET)
@@ -98,8 +111,14 @@ public class UserController {
     @RequestMapping(value="/api/users/{id}", method = RequestMethod.DELETE)
     public @ResponseBody Object deleteUser(@PathVariable Integer id){
         Map<String, Object> result = new HashMap<>();
-        userService.deleteUser(id);
-        result.put("result", "success");
-        return result;
+        try {
+            userService.deleteUser(id);
+            result.put("result", "success");
+            return result;
+        } catch (Exception ex) {
+            result.put("result", "fail");
+            result.put("message", "系统异常！");
+            return result;
+        }
     }
 }

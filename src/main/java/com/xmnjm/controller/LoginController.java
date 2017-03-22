@@ -35,22 +35,28 @@ public class LoginController {
     @ResponseBody
     public Map<String, Object> login(@Valid @RequestBody LoginRequest loginRequest) {
         Map<String, Object> result = new HashMap<>();
-        if (!StringUtils.hasText(loginRequest.getLoginName()) || !StringUtils.hasText(loginRequest.getPassword())) {
-            result.put("result", "fail");
-            result.put("message", "登录名和密码不能为空");
-            return result;
-        }
+        try {
+            if (!StringUtils.hasText(loginRequest.getLoginName()) || !StringUtils.hasText(loginRequest.getPassword())) {
+                result.put("result", "fail");
+                result.put("message", "登录名和密码不能为空");
+                return result;
+            }
 
-        User user = userService.findByLoginNameAndPassword(loginRequest.getLoginName(), loginRequest.getPassword());
-        if (user == null) {
+            User user = userService.findByLoginNameAndPassword(loginRequest.getLoginName(), loginRequest.getPassword());
+            if (user == null) {
+                result.put("result", "fail");
+                result.put("message", "手机号或密码错误！");
+                return result;
+            }
+            Object accessToken = jsonWebToken.getAccessToken(loginRequest.getLoginName(), loginRequest.getPassword());
+            result.put("result", "success");
+            result.put("user", user);
+            result.put("accessToken", accessToken);
+            return result;
+        } catch (Exception ex) {
             result.put("result", "fail");
-            result.put("message", "手机号或密码错误！");
+            result.put("message", "系统异常！");
             return result;
         }
-        Object accessToken = jsonWebToken.getAccessToken(loginRequest.getLoginName(), loginRequest.getPassword());
-        result.put("result", "success");
-        result.put("user", user);
-        result.put("accessToken", accessToken);
-        return result;
     }
 }

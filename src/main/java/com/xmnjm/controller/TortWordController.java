@@ -39,45 +39,62 @@ public class TortWordController {
     @ResponseBody
     Object save(@Valid @RequestBody TortWord tortWord) {
         Map<String, Object> result = new HashMap<>();
-        List<TortWord> tortWords = tortWordService.findByTortWordName(tortWord.getTortWordName());
-        if (!CollectionUtils.isEmpty(tortWords)) {
+        try {
+            List<TortWord> tortWords = tortWordService.findByTortWordName(tortWord.getTortWordName());
+            if (!CollectionUtils.isEmpty(tortWords)) {
+                result.put("result", "fail");
+                result.put("message", "侵权词已经存在！");
+            } else {
+                tortWordService.save(tortWord);
+                result.put("result", "success");
+                result.put("tortWord",tortWord);
+            }
+            return result;
+        } catch (Exception ex) {
             result.put("result", "fail");
-            result.put("message", "侵权词已经存在！");
-        } else {
-            tortWordService.save(tortWord);
-            result.put("result", "success");
-            result.put("tortWord",tortWord);
+            result.put("message", "系统异常！");
+            return result;
         }
-        return result;
     }
 
     @RequestMapping(value = "/api/tortWords/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     Object delete(@PathVariable("id") Long id) {
         Map<String, Object> result = new HashMap<>();
-        tortWordService.delete(id);
-        result.put("result", "success");
-        return result;
-
+        try {
+            tortWordService.delete(id);
+            result.put("result", "success");
+            return result;
+        } catch (Exception ex) {
+            result.put("result", "fail");
+            result.put("message", "系统异常！");
+            return result;
+        }
     }
 
     @RequestMapping(value = "/api/tortWords/{id}", method = RequestMethod.PUT)
     @ResponseBody
     Object update(@Valid @RequestBody TortWord tortWord) {
         Map<String, Object> result = new HashMap<>();
-        String tortWordName = tortWord.getTortWordName();
-        List<TortWord> tortWords = tortWordService.findByTortWordName(tortWordName);
-        if(!CollectionUtils.isEmpty(tortWords)) {
+        try {
+            String tortWordName = tortWord.getTortWordName();
+            List<TortWord> tortWords = tortWordService.findByTortWordName(tortWordName);
+            if(!CollectionUtils.isEmpty(tortWords)) {
+                result.put("result", "fail");
+                result.put("message", "侵权词不能重复！");
+            } else {
+                TortWord trtWrd = tortWordService.findById(tortWord.getId());
+                trtWrd.setTortWordName(tortWord.getTortWordName());
+                tortWordService.update(tortWord);
+                result.put("result", "success");
+                result.put("tortWord", trtWrd);
+            }
+            return result;
+        } catch (Exception ex) {
             result.put("result", "fail");
-            result.put("message", "侵权词不能重复！");
-        } else {
-            TortWord trtWrd = tortWordService.findById(tortWord.getId());
-            trtWrd.setTortWordName(tortWord.getTortWordName());
-            tortWordService.update(tortWord);
-            result.put("result", "success");
-            result.put("tortWord", trtWrd);
+            result.put("message", "系统异常！");
+            return result;
         }
-        return result;
     }
 
     @RequestMapping(value = "/api/tort", method = RequestMethod.GET)

@@ -42,51 +42,69 @@ public class ProductColourController {
     @RequestMapping(value = "/api/colour", method = RequestMethod.POST)
     @ResponseBody
     Object save(@Valid @RequestBody ProductColour productColour) {
-        List<ProductColour> productColours = productColourService.findByColourName(productColour.getColourName());
         Map<String, Object> result = new HashMap<>();
-        if(!CollectionUtils.isEmpty(productColours)) {
+        try {
+            List<ProductColour> productColours = productColourService.findByColourName(productColour.getColourName());
+            if(!CollectionUtils.isEmpty(productColours)) {
+                result.put("result", "fail");
+                result.put("message", "颜色已经存在！");
+            } else {
+                productColourService.save(productColour);
+                result.put("result", "success");
+                result.put("colour",productColour);
+            }
+            return result;
+        } catch (Exception ex) {
             result.put("result", "fail");
-            result.put("message", "颜色已经存在！");
-        } else {
-            productColourService.save(productColour);
-            result.put("result", "success");
-            result.put("colour",productColour);
+            result.put("message", "系统异常！");
+            return result;
         }
-        return result;
     }
 
     @RequestMapping(value = "/api/colours/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     Object delete(@PathVariable("id") Long id) {
         Map<String, Object> result = new HashMap<>();
-        List<ProductFilter> productFilters = productFilterService.findByProductColourId(id);
-        if(CollectionUtils.isEmpty(productFilters)) {
-            productColourService.delete(id);
-            result.put("result", "success");
-        } else {
+        try {
+            List<ProductFilter> productFilters = productFilterService.findByProductColourId(id);
+            if(CollectionUtils.isEmpty(productFilters)) {
+                productColourService.delete(id);
+                result.put("result", "success");
+            } else {
+                result.put("result", "fail");
+                result.put("message", "请先删除或修改关联的过滤！");
+            }
+            return result;
+        } catch (Exception ex) {
             result.put("result", "fail");
-            result.put("message", "请先删除或修改关联的过滤！");
+            result.put("message", "系统异常！");
+            return result;
         }
-        return result;
     }
 
     @RequestMapping(value = "/api/colours/{id}", method = RequestMethod.PUT)
     @ResponseBody
     Object update(@Valid @RequestBody ProductColour productColour) {
         Map<String, Object> result = new HashMap<>();
-        String colourName = productColour.getColourName();
-        List<ProductColour> productColours = productColourService.findByColourName(colourName);
-        if(!CollectionUtils.isEmpty(productColours)) {
+        try {
+            String colourName = productColour.getColourName();
+            List<ProductColour> productColours = productColourService.findByColourName(colourName);
+            if(!CollectionUtils.isEmpty(productColours)) {
+                result.put("result", "fail");
+                result.put("message", "颜色名不能重复！");
+            } else {
+                ProductColour prdctClur =productColourService.findById(productColour.getId());
+                prdctClur.setColourName(productColour.getColourName());
+                productColourService.update(prdctClur);
+                result.put("result", "success");
+                result.put("colour", prdctClur);
+            }
+            return result;
+        } catch (Exception ex) {
             result.put("result", "fail");
-            result.put("message", "颜色名不能重复！");
-        } else {
-            ProductColour prdctClur =productColourService.findById(productColour.getId());
-            prdctClur.setColourName(productColour.getColourName());
-            productColourService.update(prdctClur);
-            result.put("result", "success");
-            result.put("colour", prdctClur);
+            result.put("message", "系统异常！");
+            return result;
         }
-        return result;
     }
 
     @RequestMapping(value = "/api/product-colour", method = RequestMethod.GET)

@@ -42,50 +42,68 @@ public class ProductCategoryController {
     @ResponseBody
     Object save(@Valid @RequestBody ProductCategory productCategory) {
         Map<String, Object> result = new HashMap<>();
-        List<ProductCategory> productCategories = productCategoryService.findByCategoryName(productCategory.getCategoryName());
-        if (!CollectionUtils.isEmpty(productCategories)) {
+        try {
+            List<ProductCategory> productCategories = productCategoryService.findByCategoryName(productCategory.getCategoryName());
+            if (!CollectionUtils.isEmpty(productCategories)) {
+                result.put("result", "fail");
+                result.put("message", "类别已经存在！");
+            } else {
+                productCategoryService.save(productCategory);
+                result.put("result", "success");
+                result.put("category",productCategory);
+            }
+            return result;
+        } catch (Exception ex) {
             result.put("result", "fail");
-            result.put("message", "类别已经存在！");
-        } else {
-            productCategoryService.save(productCategory);
-            result.put("result", "success");
-            result.put("category",productCategory);
+            result.put("message", "系统异常！");
+            return result;
         }
-        return result;
     }
 
     @RequestMapping(value = "/api/categories/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     Object delete(@PathVariable("id") Long id) {
         Map<String, Object> result = new HashMap<>();
-        List<ProductFilter> productFilters = productFilterService.findByProductCategoryId(id);
-        if(CollectionUtils.isEmpty(productFilters)) {
-            productCategoryService.delete(id);
-            result.put("result", "success");
-        } else {
+        try {
+            List<ProductFilter> productFilters = productFilterService.findByProductCategoryId(id);
+            if(CollectionUtils.isEmpty(productFilters)) {
+                productCategoryService.delete(id);
+                result.put("result", "success");
+            } else {
+                result.put("result", "fail");
+                result.put("message", "请先删除或修改关联的过滤！");
+            }
+            return result;
+        } catch (Exception ex) {
             result.put("result", "fail");
-            result.put("message", "请先删除或修改关联的过滤！");
+            result.put("message", "系统异常！");
+            return result;
         }
-        return result;
     }
 
     @RequestMapping(value = "/api/categories/{id}", method = RequestMethod.PUT)
     @ResponseBody
     Object update(@Valid @RequestBody ProductCategory productCategory) {
         Map<String, Object> result = new HashMap<>();
-        String categoryName = productCategory.getCategoryName();
-        List<ProductCategory> productCategories = productCategoryService.findByCategoryName(categoryName);
-        if(!CollectionUtils.isEmpty(productCategories)) {
+        try {
+            String categoryName = productCategory.getCategoryName();
+            List<ProductCategory> productCategories = productCategoryService.findByCategoryName(categoryName);
+            if(!CollectionUtils.isEmpty(productCategories)) {
+                result.put("result", "fail");
+                result.put("message", "类别名不能重复！");
+            } else {
+                ProductCategory prdctCtgry = productCategoryService.findById(productCategory.getId());
+                prdctCtgry.setCategoryName(productCategory.getCategoryName());
+                productCategoryService.update(prdctCtgry);
+                result.put("result", "success");
+                result.put("category", prdctCtgry);
+            }
+            return result;
+        } catch (Exception ex) {
             result.put("result", "fail");
-            result.put("message", "类别名不能重复！");
-        } else {
-            ProductCategory prdctCtgry = productCategoryService.findById(productCategory.getId());
-            prdctCtgry.setCategoryName(productCategory.getCategoryName());
-            productCategoryService.update(prdctCtgry);
-            result.put("result", "success");
-            result.put("category", prdctCtgry);
+            result.put("message", "系统异常！");
+            return result;
         }
-        return result;
     }
 
     @RequestMapping(value = "/api/product-type", method = RequestMethod.GET)
