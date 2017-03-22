@@ -19,6 +19,7 @@ public class ExportDataRequest {
     //发货天数
     private int deliveryDays;
     private List<Long> productIds;
+    private ProductRequest productRequest;
 
     public Integer getTotal() {
         return total;
@@ -74,5 +75,13 @@ public class ExportDataRequest {
 
     public void setProductIds(List<Long> productIds) {
         this.productIds = productIds;
+    }
+
+    public ProductRequest getProductRequest() {
+        return productRequest;
+    }
+
+    public void setProductRequest(ProductRequest productRequest) {
+        this.productRequest = productRequest;
     }
 }

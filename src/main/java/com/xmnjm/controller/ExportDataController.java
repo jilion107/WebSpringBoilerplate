@@ -3,6 +3,7 @@ package com.xmnjm.controller;
 import com.xmnjm.bean.ExportDataRequest;
 import com.xmnjm.service.ExportDataService;
 import com.xmnjm.service.FormalProductsService;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,6 +23,7 @@ import java.io.Writer;
 /**
  * @author mandy.huang
  */
+@CrossOrigin(origins = "http://localhost:8082")
 @RestController
 public class ExportDataController {
     @Inject
@@ -30,7 +32,7 @@ public class ExportDataController {
     FormalProductsService formalProductsService;
 
     @RequestMapping(value = "/api/formal-products/export", method = RequestMethod.POST)
-    void export(@Valid @RequestBody ExportDataRequest exportDataRequest, HttpServletResponse response) {
+    String export(@Valid @RequestBody ExportDataRequest exportDataRequest, HttpServletResponse response) {
       /*  ExportDataRequest exportDataRequest = new ExportDataRequest();
         List<Long> productIds = new ArrayList<>();
         productIds.add(1l);
@@ -86,6 +88,8 @@ public class ExportDataController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return builder.toString();
     }
 
 }

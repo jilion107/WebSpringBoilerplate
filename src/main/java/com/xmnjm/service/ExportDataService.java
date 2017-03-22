@@ -1,6 +1,7 @@
 package com.xmnjm.service;
 
 import com.xmnjm.bean.ExportDataRequest;
+import com.xmnjm.bean.ProductRequest;
 import com.xmnjm.model.FormalProducts;
 import com.xmnjm.util.DateUtils;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -25,7 +27,14 @@ public class ExportDataService {
     @Transactional
     public StringBuilder genExportData(ExportDataRequest exportDataRequest) {
         Date endUpdateTime = DateUtils.getDate(new Date(), exportDataRequest.getBeforeDays() * (-1));
-        List<FormalProducts> formalProductses = formalProductsService.export(exportDataRequest.getProductIds(), endUpdateTime, exportDataRequest.getTotal());
+        List<FormalProducts> formalProductses = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(exportDataRequest.getProductIds())) {
+            formalProductses = formalProductsService.export(exportDataRequest.getProductIds(), endUpdateTime, exportDataRequest.getTotal());
+        } else {
+            ProductRequest productRequest = exportDataRequest.getProductRequest();
+            productRequest.setEndUpdateTime(endUpdateTime);
+            formalProductses = formalProductsService.list(exportDataRequest.getProductRequest(), 0, exportDataRequest.getTotal());
+        }
         StringBuilder builder = new StringBuilder();
         builder.append("sku\tproduct-id\tproduct-id-type\tprice\tminimum-seller-allowed-price\tmaximum-seller-allowed-price\titem-condition\tquantity\tadd-delete\twill-ship-internationally\texpedited-shipping\tstandard-plus\titem-note\tfulfillment-center-id\tproduct-tax-code\tleadtime-to-ship").append("\n");
         if (!CollectionUtils.isEmpty(formalProductses)) {

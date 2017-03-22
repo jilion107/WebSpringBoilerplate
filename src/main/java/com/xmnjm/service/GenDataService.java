@@ -66,6 +66,10 @@ public class GenDataService {
             }
             builder.append(") ");
         }
+        if (productRequest.getEndUpdateTime() != null) {
+            builder.append(" and updateTime<:endUpdateTime ");
+            params.put("endUpdateTime", productRequest.getEndUpdateTime());
+        }
         builder.append("order by id desc ");
         Query query = Query.create(builder.toString());
         Iterator<String> it = params.keySet().iterator();

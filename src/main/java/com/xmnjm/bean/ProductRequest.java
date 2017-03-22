@@ -1,5 +1,6 @@
 package com.xmnjm.bean;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,6 +16,15 @@ public class ProductRequest {
     private String startCreateTime;
     private String endCreateTime;
     private Integer scenarioWhat;
+    private Date endUpdateTime;
+
+    public Date getEndUpdateTime() {
+        return endUpdateTime;
+    }
+
+    public void setEndUpdateTime(Date endUpdateTime) {
+        this.endUpdateTime = endUpdateTime;
+    }
 
     public String getBrand() {
         return brand;
