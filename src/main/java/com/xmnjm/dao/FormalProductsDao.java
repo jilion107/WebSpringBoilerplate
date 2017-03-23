@@ -37,6 +37,11 @@ public class FormalProductsDao {
         jpaAccess.update(formalProducts);
     }
 
+    @Transactional
+    public void delete(FormalProducts formalProducts) {
+        if (formalProducts != null) jpaAccess.delete(formalProducts);
+    }
+
     public FormalProducts findById(Long id) {
         return jpaAccess.findOne(Query.create("from FormalProducts where status=1 and id=:id").param("id", id));
     }
@@ -79,7 +84,7 @@ public class FormalProductsDao {
 
     public List<FormalProducts> list(ProductRequest productRequest, int offset, int fetchSize) {
         StringBuilder builder = new StringBuilder();
-        builder.append("from FormalProducts where 1=1 ");
+        builder.append("from FormalProducts where status=1 ");
         Query query = genDataService.genQuery(productRequest, builder);
         query.from(offset).fetch(fetchSize);
         return jpaAccess.find(query);

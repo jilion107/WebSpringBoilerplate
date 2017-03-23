@@ -41,18 +41,12 @@ public class FormalProductsService {
     @Transactional
     public void delete(Long id) {
         FormalProducts formalProducts = findById(id);
-        formalProducts.setStatus(0);
-        update(formalProducts);
+        if (formalProducts != null)
+            formalProductsDao.delete(formalProducts);
     }
 
     public FormalProducts findById(Long id) {
         return formalProductsDao.findById(id);
-    }
-
-    @Transactional
-    public void update(FormalProducts formalProducts) {
-        formalProducts.setUpdateTime(new Date());
-        formalProductsDao.update(formalProducts);
     }
 
     public FormalProducts findByAsin(String asin) {
@@ -63,6 +57,12 @@ public class FormalProductsService {
     public void delete(FormalProducts formalProducts) {
         formalProducts.setStatus(0);
         update(formalProducts);
+    }
+
+    @Transactional
+    public void update(FormalProducts formalProducts) {
+        formalProducts.setUpdateTime(new Date());
+        formalProductsDao.update(formalProducts);
     }
 
     @Transactional
