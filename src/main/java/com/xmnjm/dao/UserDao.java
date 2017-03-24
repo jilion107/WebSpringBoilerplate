@@ -31,7 +31,7 @@ public class UserDao {
         jpaAccess.update(Query.create("delete User where id=:id").param("id", id));
     }
 
-    public User findById(Long id) {
+    public User findById(Integer id) {
         return jpaAccess.findOne(QueryBuilder.query("from User").append("id", id).append("status", 1).build());
     }
 

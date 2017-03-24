@@ -17,6 +17,8 @@ public class ProductRequest {
     private String endCreateTime;
     private Integer scenarioWhat;
     private Date endUpdateTime;
+    private Integer userId;
+    private Integer companyId;
 
     public Date getEndUpdateTime() {
         return endUpdateTime;
@@ -96,5 +98,21 @@ public class ProductRequest {
 
     public void setProductTypeName(String productTypeName) {
         this.productTypeName = productTypeName;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public Integer getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
     }
 }

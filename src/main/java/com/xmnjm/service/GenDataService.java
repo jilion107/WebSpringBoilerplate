@@ -70,7 +70,15 @@ public class GenDataService {
             builder.append(" and updateTime<:endUpdateTime ");
             params.put("endUpdateTime", productRequest.getEndUpdateTime());
         }
-        builder.append("order by id desc ");
+        if (productRequest.getUserId() != null) {
+            builder.append(" and userId=:userId");
+            params.put("userId", productRequest.getUserId());
+        }
+        if (productRequest.getCompanyId() != null) {
+            builder.append(" and companyId=:companyId");
+            params.put("companyId", productRequest.getCompanyId());
+        }
+        builder.append(" order by id desc ");
         Query query = Query.create(builder.toString());
         Iterator<String> it = params.keySet().iterator();
         while (it.hasNext()) {

@@ -20,20 +20,14 @@ public class ImportDataController {
     ExcelOperateService excelOperateService;
 
     @RequestMapping(value = "/api/upload", method = RequestMethod.POST)
-    public void upload(@RequestParam("file") CommonsMultipartFile file, @RequestParam("scenarioWhat") Integer scenarioWhat) {
+    public void upload(@RequestParam("file") CommonsMultipartFile file, @RequestParam("scenarioWhat") Integer scenarioWhat, @RequestParam("userId") Integer userId, @RequestParam("companyId") Integer companyId) {
         try {
             //String fileName = "D:\\fannieERP\\妹娇卫衣采集器采集过(1).xls";
             //excelOperateService.readXml(fileName, 0);
-            excelOperateService.readXml(file, scenarioWhat);
+            excelOperateService.readXml(file, scenarioWhat, userId, companyId);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-
-    @RequestMapping(value = "/api/upload/test", method = RequestMethod.GET)
-    public void upload() {
-        String fileName = "D:\\fannieERP\\妹娇卫衣采集器采集过(1).xlsx";
-        excelOperateService.readXml(fileName, 0);
     }
 
 }

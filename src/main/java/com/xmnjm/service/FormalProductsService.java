@@ -25,16 +25,20 @@ public class FormalProductsService {
     TmpProductsService tmpProductsService;
     @Inject
     ProductCategoryService productCategoryService;
+    @Inject
+    RoleService roleService;
 
     public List<FormalProducts> list(FormalProducts formalProducts, int offset, int fetchSize, String orderField) {
         return formalProductsDao.list(formalProducts, offset, fetchSize, orderField, true);
     }
 
     public List<FormalProducts> list(ProductRequest productRequest, int offset, int fetchSize) {
+        roleService.updateProductRequestByRole(productRequest);
         return formalProductsDao.list(productRequest, offset, fetchSize);
     }
 
     public Long count(ProductRequest productRequest) {
+        roleService.updateProductRequestByRole(productRequest);
         return formalProductsDao.count(productRequest);
     }
 

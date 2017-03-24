@@ -18,7 +18,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.inject.Inject;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
@@ -40,15 +39,14 @@ public class ExcelOperateService {
     @Inject
     TortWordService tortWordService;
 
-    public void readXml(String fileName, Integer scenarioWhat) {
-
+    public void readXml(CommonsMultipartFile file, Integer scenarioWhat, Integer userId, Integer companyId) {
         boolean isE2007 = false;    //判断是否是excel2007格式
-        if (fileName.endsWith("xlsx"))
+        if (file.getOriginalFilename().endsWith("xlsx"))
             isE2007 = true;
         InputStream input = null;
         Workbook wb = null;
         try {
-            input = new FileInputStream(fileName);  //建立输入流
+            input = file.getInputStream();  //建立输入流
             //根据文件格式(2003或者2007)来初始化
             if (isE2007)
                 wb = new XSSFWorkbook(input);
@@ -58,68 +56,77 @@ public class ExcelOperateService {
             Iterator<Row> rows = sheet.rowIterator(); //获得第一个表单的迭代器
             rows.next();//第一行不读取
             while (rows.hasNext()) {
-                Row row = rows.next();  //获得行数据
+                try {
+                    Row row = rows.next();  //获得行数据
 
-                //当ASIN和型号两单位格没有数据里跳出行循环
-                if ((row.getCell(3) == null || !StringUtils.hasText(row.getCell(3).getStringCellValue())) && (row.getCell(9) == null || !StringUtils.hasText(row.getCell(9).getStringCellValue()))) {
-                    break;
-                }
+                    //当ASIN和型号两单位格没有数据里跳出行循环
+                    if ((row.getCell(3) == null || !StringUtils.hasText(row.getCell(3).getStringCellValue())) && (row.getCell(9) == null || !StringUtils.hasText(row.getCell(9).getStringCellValue()))) {
+                        break;
+                    }
 
-                //当型号为Parent,不读此行数据
-                if (row.getCell(9) == null || !StringUtils.hasText(row.getCell(9).getStringCellValue()) || "Parent".equals(row.getCell(9).getStringCellValue())) {
-                    continue;
-                }
+                    //当型号为Parent,不读此行数据
+                    if (row.getCell(9) == null || !StringUtils.hasText(row.getCell(9).getStringCellValue()) || "Parent".equals(row.getCell(9).getStringCellValue())) {
+                        continue;
+                    }
 
-                Products products = new Products();
+                    Products products = new Products();
 
-                //如果此ASIN数据已经存在数据库里，直接更新
-                String asin = row.getCell(3).getStringCellValue();
-                TmpProducts tmpProducts = tmpProductsService.findByAsin(asin);
-                if (tmpProducts != null && tmpProducts.getId() != null) {
-                    BeanUtils.copyProperties(tmpProducts, products);
+                    //如果此ASIN数据已经存在数据库里，直接更新
+                    String asin = row.getCell(3).getStringCellValue();
+                    TmpProducts tmpProducts = tmpProductsService.findByAsin(asin);
+                    if (tmpProducts != null && tmpProducts.getId() != null) {
+                        BeanUtils.copyProperties(tmpProducts, products);
+                        this.setProduct(products, row, scenarioWhat);
+                        BeanUtils.copyProperties(products, tmpProducts);
+                        tmpProductsService.update(tmpProducts);
+                        continue;
+                    }
+
+
+                    TortProducts tortProducts = tortProductsService.findByAsin(asin);
+                    if (tortProducts != null && tortProducts.getId() != null) {
+                        BeanUtils.copyProperties(tortProducts, products);
+                        this.setProduct(products, row, scenarioWhat);
+                        BeanUtils.copyProperties(products, tortProducts);
+                        tortProductsService.update(tortProducts);
+                        continue;
+                    }
+
+
+                    FormalProducts formalProducts = formalProductsService.findByAsin(asin);
+                    if (formalProducts != null && formalProducts.getId() != null) {
+                        BeanUtils.copyProperties(formalProducts, products);
+                        this.setProduct(products, row, scenarioWhat);
+                        BeanUtils.copyProperties(products, formalProducts);
+                        formalProductsService.update(formalProducts);
+                        continue;
+                    }
+
+                    //判断是否过滤此数据
+                    boolean isFilter = this.isFilter(row);
+                    if (isFilter) continue;
+
                     this.setProduct(products, row, scenarioWhat);
-                    BeanUtils.copyProperties(products, tmpProducts);
-                    tmpProductsService.update(tmpProducts);
+
+                    //过滤品牌
+                    boolean isTort = this.isTort(row);
+                    if (isTort) {
+                        tortProducts = new TortProducts();
+                        BeanUtils.copyProperties(products, tortProducts);
+                        tortProducts.setUserId(userId);
+                        tortProducts.setCompanyId(companyId);
+                        tortProductsService.save(tortProducts);
+                    } else {
+                        tmpProducts = new TmpProducts();
+                        BeanUtils.copyProperties(products, tmpProducts);
+                        tmpProducts.setUserId(userId);
+                        tmpProducts.setCompanyId(companyId);
+                        tmpProductsService.save(tmpProducts);
+                    }
+                } catch (Exception ex) {
                     continue;
                 }
 
-
-                TortProducts tortProducts = tortProductsService.findByAsin(asin);
-                if (tortProducts != null && tortProducts.getId() != null) {
-                    BeanUtils.copyProperties(tortProducts, products);
-                    this.setProduct(products, row, scenarioWhat);
-                    BeanUtils.copyProperties(products, tortProducts);
-                    tortProductsService.update(tortProducts);
-                    continue;
-                }
-
-
-                FormalProducts formalProducts = formalProductsService.findByAsin(asin);
-                if (formalProducts != null && formalProducts.getId() != null) {
-                    BeanUtils.copyProperties(formalProducts, products);
-                    this.setProduct(products, row, scenarioWhat);
-                    BeanUtils.copyProperties(products, formalProducts);
-                    formalProductsService.update(formalProducts);
-                    continue;
-                }
-
-                //判断是否过滤此数据
-                boolean isFilter = this.isFilter(row);
-                if (isFilter) continue;
-
-                this.setProduct(products, row, scenarioWhat);
-
-                //过滤品牌
-                boolean isTort = this.isTort(row);
-                if (isTort) {
-                    tortProducts = new TortProducts();
-                    BeanUtils.copyProperties(products, tortProducts);
-                    tortProductsService.save(tortProducts);
-                } else {
-                    tmpProducts = new TmpProducts();
-                    BeanUtils.copyProperties(products, tmpProducts);
-                    tmpProductsService.save(tmpProducts);
-                }
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -237,97 +244,5 @@ public class ExcelOperateService {
         if (brand == null) return false;
         List<TortWord> tortWords = tortWordService.findByTortWordName(brand);
         return !CollectionUtils.isEmpty(tortWords);
-    }
-
-    public void readXml(CommonsMultipartFile file, Integer scenarioWhat) {
-        boolean isE2007 = false;    //判断是否是excel2007格式
-        if (file.getOriginalFilename().endsWith("xlsx"))
-            isE2007 = true;
-        InputStream input = null;
-        Workbook wb = null;
-        try {
-            input = file.getInputStream();  //建立输入流
-            //根据文件格式(2003或者2007)来初始化
-            if (isE2007)
-                wb = new XSSFWorkbook(input);
-            else
-                wb = new HSSFWorkbook(input);
-            Sheet sheet = wb.getSheetAt(0);     //获得第一个表单
-            Iterator<Row> rows = sheet.rowIterator(); //获得第一个表单的迭代器
-            rows.next();//第一行不读取
-            while (rows.hasNext()) {
-                Row row = rows.next();  //获得行数据
-
-                //当ASIN和型号两单位格没有数据里跳出行循环
-                if ((row.getCell(3) == null || !StringUtils.hasText(row.getCell(3).getStringCellValue())) && (row.getCell(9) == null || !StringUtils.hasText(row.getCell(9).getStringCellValue()))) {
-                    break;
-                }
-
-                //当型号为Parent,不读此行数据
-                if (row.getCell(9) == null || !StringUtils.hasText(row.getCell(9).getStringCellValue()) || "Parent".equals(row.getCell(9).getStringCellValue())) {
-                    continue;
-                }
-
-                Products products = new Products();
-
-                //如果此ASIN数据已经存在数据库里，直接更新
-                String asin = row.getCell(3).getStringCellValue();
-                TmpProducts tmpProducts = tmpProductsService.findByAsin(asin);
-                if (tmpProducts != null && tmpProducts.getId() != null) {
-                    BeanUtils.copyProperties(tmpProducts, products);
-                    this.setProduct(products, row, scenarioWhat);
-                    BeanUtils.copyProperties(products, tmpProducts);
-                    tmpProductsService.update(tmpProducts);
-                    continue;
-                }
-
-
-                TortProducts tortProducts = tortProductsService.findByAsin(asin);
-                if (tortProducts != null && tortProducts.getId() != null) {
-                    BeanUtils.copyProperties(tortProducts, products);
-                    this.setProduct(products, row, scenarioWhat);
-                    BeanUtils.copyProperties(products, tortProducts);
-                    tortProductsService.update(tortProducts);
-                    continue;
-                }
-
-
-                FormalProducts formalProducts = formalProductsService.findByAsin(asin);
-                if (formalProducts != null && formalProducts.getId() != null) {
-                    BeanUtils.copyProperties(formalProducts, products);
-                    this.setProduct(products, row, scenarioWhat);
-                    BeanUtils.copyProperties(products, formalProducts);
-                    formalProductsService.update(formalProducts);
-                    continue;
-                }
-
-                //判断是否过滤此数据
-                boolean isFilter = this.isFilter(row);
-                if (isFilter) continue;
-
-                this.setProduct(products, row, scenarioWhat);
-
-                //过滤品牌
-                boolean isTort = this.isTort(row);
-                if (isTort) {
-                    tortProducts = new TortProducts();
-                    BeanUtils.copyProperties(products, tortProducts);
-                    tortProductsService.save(tortProducts);
-                } else {
-                    tmpProducts = new TmpProducts();
-                    BeanUtils.copyProperties(products, tmpProducts);
-                    tmpProductsService.save(tmpProducts);
-                }
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } finally {
-            try {
-                if (wb != null) wb.close();
-                if (input != null) input.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
     }
 }

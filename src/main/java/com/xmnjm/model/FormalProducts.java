@@ -18,9 +18,9 @@ public class FormalProducts {
 
     private String asin;
 
-    private Long userId;
+    private Integer userId;
 
-    private Long companyId;
+    private Integer companyId;
 
     //品牌
     private String brand;
@@ -94,14 +94,6 @@ public class FormalProducts {
         this.id = id;
     }
 
-    public Long getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(Long companyId) {
-        this.companyId = companyId;
-    }
-
     public String getAsin() {
         return asin;
     }
@@ -110,12 +102,20 @@ public class FormalProducts {
         this.asin = asin;
     }
 
-    public Long getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public Integer getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
     }
 
     public String getBrand() {

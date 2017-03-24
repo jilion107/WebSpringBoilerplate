@@ -19,6 +19,8 @@ import java.util.List;
 public class TmpProductsService {
     @Inject
     TmpProductsDao tmpProductsDao;
+    @Inject
+    RoleService roleService;
 
     @Transactional
     public void save(TmpProducts tmpProducts) {
@@ -61,10 +63,12 @@ public class TmpProductsService {
     }
 
     public List<TmpProducts> list(ProductRequest productRequest, int offset, int fetchSize) {
+        roleService.updateProductRequestByRole(productRequest);
         return tmpProductsDao.list(productRequest, offset, fetchSize);
     }
 
     public Long count(ProductRequest productRequest) {
+        roleService.updateProductRequestByRole(productRequest);
         return tmpProductsDao.count(productRequest);
     }
 }
