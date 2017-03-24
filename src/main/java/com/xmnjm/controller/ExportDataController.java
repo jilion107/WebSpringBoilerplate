@@ -19,6 +19,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author mandy.huang
@@ -32,7 +34,7 @@ public class ExportDataController {
     FormalProductsService formalProductsService;
 
     @RequestMapping(value = "/api/formal-products/export", method = RequestMethod.POST)
-    String export(@Valid @RequestBody ExportDataRequest exportDataRequest, HttpServletResponse response) {
+    Object export(@Valid @RequestBody ExportDataRequest exportDataRequest, HttpServletResponse response) {
       /*  ExportDataRequest exportDataRequest = new ExportDataRequest();
         List<Long> productIds = new ArrayList<>();
         productIds.add(1l);
@@ -51,23 +53,23 @@ public class ExportDataController {
         StringBuilder builder = exportDataService.genExportData(exportDataRequest);
 
         String fileName = "download-products.txt";
+        Map<String, Object> result = new HashMap<>();
 
-        response.reset();
-        response.setHeader("Content-disposition", "attachment; filename=" + fileName);// 设定输出文件头
-        response.setContentType("text/x-plain");// 定义输出类型
+        //response.reset();
+        //response.setHeader("Content-disposition", "attachment; filename=" + fileName);// 设定输出文件头
+        //response.setContentType("text/x-plain");// 定义输出类型
 
         try {
             ServletOutputStream out = response.getOutputStream();
 
-            String path = System.getProperty("java.io.tmpdir") + "\\poem.txt";
-            File file = new File(path);
+            File file = new File("poem.txt");
             FileOutputStream fos = new FileOutputStream(file);
             Writer writer = new OutputStreamWriter(fos, "utf-8");
             writer.write(builder.toString());
             writer.close();
             fos.close();
 
-            FileInputStream fis = new java.io.FileInputStream(file);
+           /*   FileInputStream fis = new java.io.FileInputStream(file);
             ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream(4096);
 
             byte[] cache = new byte[4096];
@@ -82,14 +84,16 @@ public class ExportDataController {
             out.flush();
             out.close();
             fis.close();
-            if (file.exists()) {
+          if (file.exists()) {
                 file.delete();
-            }
+            }*/
+            result.put("result", "success");
+            result.put("file", file);
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-
-        return builder.toString();
     }
 
 }

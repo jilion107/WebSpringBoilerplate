@@ -1,6 +1,8 @@
 package com.xmnjm.controller;
 
+import com.xmnjm.model.Company;
 import com.xmnjm.model.User;
+import com.xmnjm.service.CompanyService;
 import com.xmnjm.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private CompanyService companyService;
 
     @RequestMapping(value = "/api/users", method = RequestMethod.GET)
     @ResponseBody
@@ -41,25 +45,20 @@ public class UserController {
         Map<String, Object> result = new HashMap<>();
         String loginName = user.getLoginName();
         try {
-            List<User> existUser = userService.findByLoginName(loginName);
-            if(existUser.isEmpty()) {
-                User newUser =  userService.getUser(user.getId());
-                Date newUserCreatedTime = newUser.getCreateTime();
-                Integer newUserStatue = newUser.getStatus();
-                BeanUtils.copyProperties(user, newUser);
-                newUser.setUpdateTime(new Date());
-                newUser.setPassword(user.getPhone());
-                newUser.setCreateTime(newUserCreatedTime);
-                newUser.setStatus(newUserStatue);
-                newUser.setUpdateTime(new Date());
-                result.put("result", "success");
-                result.put("user", userService.updateUser(newUser));
-            } else {
-                result.put("result", "fail");
-                result.put("message", "登录名不能重复！");
-            }
+            User newUser =  userService.getUser(user.getId());
+            Company company = companyService.getCompany(newUser.getCompanyId());
+            Date newUserCreatedTime = newUser.getCreateTime();
+            Integer newUserStatue = newUser.getStatus();
+            BeanUtils.copyProperties(user, newUser);
+            newUser.setCompanyId(company.getId());
+            newUser.setUpdateTime(new Date());
+            newUser.setPassword(user.getPhone());
+            newUser.setCreateTime(newUserCreatedTime);
+            newUser.setStatus(newUserStatue);
+            newUser.setUpdateTime(new Date());
+            result.put("result", "success");
+            result.put("user", userService.updateUser(newUser));
             return result;
-
         } catch (Exception ex) {
             result.put("result", "fail");
             result.put("message", "系统异常！");
