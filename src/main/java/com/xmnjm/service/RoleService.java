@@ -1,6 +1,7 @@
 package com.xmnjm.service;
 
 import com.xmnjm.bean.ProductRequest;
+import com.xmnjm.bean.RoleEnum;
 import com.xmnjm.dao.UserDao;
 import com.xmnjm.model.User;
 import org.springframework.stereotype.Service;
@@ -34,21 +35,22 @@ public class RoleService {
             return;
         }
         //集团admin
-        if ("1".equals(user.getRole())) {
+        if (RoleEnum.admin.equals(user.getRole())) {
             productRequest.setUserId(null);
             productRequest.setCompanyId(null);
             return;
         }
+        Integer companyId = user.getCompanyId() == null ? -1 : user.getCompanyId();
         //公司admin
-        if ("2".equals(user.getRole())) {
+        if (RoleEnum.companyAdmin.equals(user.getRole())) {
             productRequest.setUserId(null);
-            productRequest.setCompanyId(user.getCompanyId());
+            productRequest.setCompanyId(companyId);
             return;
         }
         //公司经理
-        if ("3".equals(user.getRole()) || "4".equals(user.getRole())) {
+        if (RoleEnum.companyManager.equals(user.getRole()) || RoleEnum.companyOperator.equals(user.getRole())) {
             productRequest.setUserId(user.getId());
-            productRequest.setCompanyId(user.getCompanyId());
+            productRequest.setCompanyId(companyId);
         }
     }
 }
