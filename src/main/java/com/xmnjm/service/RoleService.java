@@ -34,20 +34,20 @@ public class RoleService {
             return;
         }
         //集团admin
-        if ("集团admin".equals(user.getRole())) {
+        if ("1".equals(user.getRole())) {
             productRequest.setUserId(null);
             productRequest.setCompanyId(null);
             return;
         }
         Integer companyId = user.getCompanyId() == null ? -1 : user.getCompanyId();
         //公司admin
-        if ("公司admin".equals(user.getRole())) {
+        if ("2".equals(user.getRole())) {
             productRequest.setUserId(null);
             productRequest.setCompanyId(companyId);
             return;
         }
         //公司经理
-        if ("公司经理".equals(user.getRole()) || "公司操作员".equals(user.getRole())) {
+        if ("3".equals(user.getRole()) || "4".equals(user.getRole())) {
             productRequest.setUserId(user.getId());
             productRequest.setCompanyId(companyId);
         }
