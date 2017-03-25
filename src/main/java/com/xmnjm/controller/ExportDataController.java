@@ -3,6 +3,7 @@ package com.xmnjm.controller;
 import com.xmnjm.bean.ExportDataRequest;
 import com.xmnjm.service.ExportDataService;
 import com.xmnjm.service.FormalProductsService;
+import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,31 +63,18 @@ public class ExportDataController {
         try {
             ServletOutputStream out = response.getOutputStream();
 
-            File file = new File("poem.txt");
+            String path = ClassUtils.class.getClassLoader().getResource("").getPath();
+            File tmpFile = new File(path);
+            String parentPath = tmpFile.getParent();
+            File tmpFile2 = new File(parentPath);
+            String absPath = tmpFile2.getParent() + "\\poem.txt";
+
+            File file = new File(absPath);
             FileOutputStream fos = new FileOutputStream(file);
             Writer writer = new OutputStreamWriter(fos, "utf-8");
             writer.write(builder.toString());
             writer.close();
             fos.close();
-
-           /*   FileInputStream fis = new java.io.FileInputStream(file);
-            ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream(4096);
-
-            byte[] cache = new byte[4096];
-            for (int offset = fis.read(cache); offset != -1; offset = fis.read(cache)) {
-                byteOutputStream.write(cache, 0, offset);
-            }
-
-            byte[] bt = null;
-            bt = byteOutputStream.toByteArray();
-
-            out.write(bt);
-            out.flush();
-            out.close();
-            fis.close();
-          if (file.exists()) {
-                file.delete();
-            }*/
             result.put("result", "success");
             result.put("file", file);
             return result;
