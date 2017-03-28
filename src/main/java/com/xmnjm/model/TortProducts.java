@@ -22,6 +22,8 @@ public class TortProducts {
 
     private Integer companyId;
 
+    private Long parent;
+
     //品牌
     private String brand;
 
@@ -298,5 +300,13 @@ public class TortProducts {
 
     public void setChecked(Boolean checked) {
         this.checked = checked;
+    }
+
+    public Long getParent() {
+        return parent;
+    }
+
+    public void setParent(Long parent) {
+        this.parent = parent;
     }
 }

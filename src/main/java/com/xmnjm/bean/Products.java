@@ -10,9 +10,11 @@ public class Products {
 
     private String asin;
 
-    private Long userId;
+    private Integer userId;
 
-    private Long companyId;
+    private Integer companyId;
+
+    private Long parent;
 
     //品牌
     private String brand;
@@ -83,11 +85,11 @@ public class Products {
         this.id = id;
     }
 
-    public Long getCompanyId() {
+    public Integer getCompanyId() {
         return companyId;
     }
 
-    public void setCompanyId(Long companyId) {
+    public void setCompanyId(Integer companyId) {
         this.companyId = companyId;
     }
 
@@ -99,11 +101,11 @@ public class Products {
         this.asin = asin;
     }
 
-    public Long getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -289,5 +291,13 @@ public class Products {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public Long getParent() {
+        return parent;
+    }
+
+    public void setParent(Long parent) {
+        this.parent = parent;
     }
 }

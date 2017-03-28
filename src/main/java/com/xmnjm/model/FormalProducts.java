@@ -22,6 +22,8 @@ public class FormalProducts {
 
     private Integer companyId;
 
+    private Long parent;
+
     //品牌
     private String brand;
 
@@ -308,5 +310,13 @@ public class FormalProducts {
 
     public void setChecked(Boolean checked) {
         this.checked = checked;
+    }
+
+    public Long getParent() {
+        return parent;
+    }
+
+    public void setParent(Long parent) {
+        this.parent = parent;
     }
 }
