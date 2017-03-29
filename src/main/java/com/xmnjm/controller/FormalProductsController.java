@@ -3,7 +3,9 @@ package com.xmnjm.controller;
 import com.xmnjm.bean.ProductRequest;
 import com.xmnjm.bean.ProductsIdRequest;
 import com.xmnjm.model.FormalProducts;
+import com.xmnjm.model.TmpProducts;
 import com.xmnjm.service.FormalProductsService;
+import com.xmnjm.service.TmpProductsService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -28,6 +30,8 @@ import java.util.List;
 public class FormalProductsController {
     @Inject
     FormalProductsService formalProductsService;
+    @Inject
+    TmpProductsService tmpProductsService;
 
     @RequestMapping(value = "/api/formal-products/{id}", method = RequestMethod.GET)
     @ResponseBody
@@ -46,7 +50,16 @@ public class FormalProductsController {
     @RequestMapping(value = "/api/formal-products/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     void delete(@PathVariable("id") Long id) {
+        //删除变体
+        List<FormalProducts> formalProductses = formalProductsService.findByParent(id);
+        if (!CollectionUtils.isEmpty(formalProductses)) {
+            for (FormalProducts formalProducts : formalProductses) {
+                formalProductsService.delete(formalProducts);
+            }
+        }
+        //删除父节点
         formalProductsService.delete(id);
+
     }
 
     @RequestMapping(value = "/api/formal-products", method = RequestMethod.PUT)
@@ -87,7 +100,15 @@ public class FormalProductsController {
     @RequestMapping(value = "/api/add-to-formal-products/{productTypeId}", method = RequestMethod.GET)
     @ResponseBody
     void save(@PathVariable("productTypeId") Long productTypeId, @RequestParam("tmpProductId") Long tmpProductId) {
-        formalProductsService.saveFromTmpProduct(productTypeId, tmpProductId);
+        FormalProducts formalProducts = formalProductsService.saveFromTmpProduct(productTypeId, tmpProductId);
+
+        //添加变体
+        List<TmpProducts> tmpProductses = tmpProductsService.findByParent(tmpProductId);
+        if (!CollectionUtils.isEmpty(tmpProductses)) {
+            for (TmpProducts tmpProducts : tmpProductses) {
+                formalProductsService.saveFromTmpProduct(formalProducts, tmpProducts);
+            }
+        }
     }
 
     /**
@@ -101,7 +122,15 @@ public class FormalProductsController {
         List<Long> productIds = productsIdRequest.getProductIds();
         if (CollectionUtils.isEmpty(productIds)) return;
         for (int i = 0; i < productIds.size(); i++) {
-            formalProductsService.saveFromTmpProduct(productTypeId, productIds.get(i));
+            FormalProducts formalProducts = formalProductsService.saveFromTmpProduct(productTypeId, productIds.get(i));
+
+            List<TmpProducts> tmpProductses = tmpProductsService.findByParent(productIds.get(i));
+            if (!CollectionUtils.isEmpty(tmpProductses)) {
+                for (TmpProducts tmpProducts : tmpProductses) {
+                    formalProductsService.saveFromTmpProduct(formalProducts, tmpProducts);
+                }
+            }
+
         }
     }
 
@@ -116,6 +145,15 @@ public class FormalProductsController {
     FormalProducts update(@PathVariable Long id) {
         FormalProducts formalProducts = formalProductsService.findById(id);
         if (formalProducts == null) return null;
+
+        List<FormalProducts> formalProductses = formalProductsService.findByParent(id);
+        if (!CollectionUtils.isEmpty(formalProductses)) {
+            for (FormalProducts rp : formalProductses) {
+                rp.setScenarioWhat(1);
+                formalProductsService.update(rp);
+            }
+        }
+
         formalProducts.setScenarioWhat(1);
         formalProductsService.update(formalProducts);
         return formalProducts;

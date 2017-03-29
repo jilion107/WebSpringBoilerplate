@@ -78,6 +78,11 @@ public class GenDataService {
             builder.append(" and companyId=:companyId");
             params.put("companyId", productRequest.getCompanyId());
         }
+        if (productRequest.getHasParent() != null && productRequest.getHasParent()) {
+            builder.append(" and parent is null");
+        } else {
+            builder.append(" and parent is not null");
+        }
         builder.append(" order by id desc ");
         Query query = Query.create(builder.toString());
         Iterator<String> it = params.keySet().iterator();

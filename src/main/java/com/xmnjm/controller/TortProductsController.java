@@ -4,6 +4,7 @@ import com.xmnjm.bean.ProductRequest;
 import com.xmnjm.model.TortProducts;
 import com.xmnjm.service.TortProductsService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -85,8 +85,17 @@ public class TortProductsController {
      */
     @RequestMapping(value = "/api/tort-products/scenarioWhat/{id}", method = RequestMethod.GET)
     @ResponseBody
-    TortProducts update(@PathVariable Long id, HttpServletRequest request) {
+    TortProducts update(@PathVariable Long id) {
         TortProducts tortProducts = tortProductsService.findById(id);
+
+        List<TortProducts> tortProductses = tortProductsService.findByParent(id);
+        if (!CollectionUtils.isEmpty(tortProductses)) {
+            for (TortProducts tp : tortProductses) {
+                tp.setScenarioWhat(1);
+                tortProductsService.update(tp);
+            }
+        }
+
         tortProductsService.update(tortProducts);
         return tortProducts;
     }

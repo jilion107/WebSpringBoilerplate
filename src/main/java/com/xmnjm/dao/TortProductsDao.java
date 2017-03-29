@@ -39,6 +39,10 @@ public class TortProductsDao {
         return jpaAccess.findOne(Query.create("from TortProducts where status=1 and id=:id").param("id", id));
     }
 
+    public List<TortProducts> findByParent(Long parent) {
+        return jpaAccess.find(Query.create("from TortProducts where status=1 and parent=:parent").param("parent", parent));
+    }
+
     public TortProducts findByAsin(String asin) {
         return jpaAccess.findOne(Query.create("from TortProducts where status=1 and asin=:asin").param("asin", asin));
     }

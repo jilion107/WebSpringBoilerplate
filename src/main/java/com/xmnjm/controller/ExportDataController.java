@@ -11,12 +11,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -36,33 +33,13 @@ public class ExportDataController {
 
     @RequestMapping(value = "/api/formal-products/export", method = RequestMethod.POST)
     Object export(@Valid @RequestBody ExportDataRequest exportDataRequest, HttpServletResponse response) {
-      /*  ExportDataRequest exportDataRequest = new ExportDataRequest();
-        List<Long> productIds = new ArrayList<>();
-        productIds.add(1l);
-        productIds.add(2l);
-        productIds.add(3l);
-        productIds.add(4l);
-        productIds.add(5l);
-        productIds.add(6l);
-        exportDataRequest.setProductIds(productIds);
-        exportDataRequest.setBeforeDays(2);
-        exportDataRequest.setDeliveryDays(10);
-        exportDataRequest.setMaxQuantity(100);
-        exportDataRequest.setMinQuantity(50);
-        exportDataRequest.setPrices(15.29);
-        exportDataRequest.setTotal(2);*/
+
+
         StringBuilder builder = exportDataService.genExportData(exportDataRequest);
 
-        String fileName = "download-products.txt";
         Map<String, Object> result = new HashMap<>();
 
-        //response.reset();
-        //response.setHeader("Content-disposition", "attachment; filename=" + fileName);// 设定输出文件头
-        //response.setContentType("text/x-plain");// 定义输出类型
-
         try {
-            ServletOutputStream out = response.getOutputStream();
-
             String path = ClassUtils.class.getClassLoader().getResource("").getPath();
             File tmpFile = new File(path);
             String parentPath = tmpFile.getParent();

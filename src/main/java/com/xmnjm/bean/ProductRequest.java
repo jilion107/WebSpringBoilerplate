@@ -19,6 +19,7 @@ public class ProductRequest {
     private Date endUpdateTime;
     private Integer userId;
     private Integer companyId;
+    private Boolean hasParent;
 
     public Date getEndUpdateTime() {
         return endUpdateTime;
@@ -114,5 +115,13 @@ public class ProductRequest {
 
     public void setCompanyId(Integer companyId) {
         this.companyId = companyId;
+    }
+
+    public Boolean getHasParent() {
+        return hasParent;
+    }
+
+    public void setHasParent(Boolean hasParent) {
+        this.hasParent = hasParent;
     }
 }

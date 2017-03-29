@@ -146,7 +146,7 @@ public class ImportDataService {
             try {
                 //当品牌和产品名称为空，表示无变体，不保存
                 if (StringUtils.isEmpty(row.get(1)) && StringUtils.isEmpty(row.get(2))) {
-                    break;
+                    continue;
                 }
 
                 Products products = new Products();

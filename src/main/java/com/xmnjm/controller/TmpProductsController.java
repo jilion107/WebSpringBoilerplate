@@ -3,6 +3,7 @@ package com.xmnjm.controller;
 import com.xmnjm.bean.ProductRequest;
 import com.xmnjm.model.TmpProducts;
 import com.xmnjm.service.TmpProductsService;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,6 +45,12 @@ public class TmpProductsController {
     @ResponseBody
     void delete(@PathVariable("id") Long id) {
         tmpProductsService.delete(id);
+        List<TmpProducts> tmpProductses = tmpProductsService.findByParent(id);
+        if (!CollectionUtils.isEmpty(tmpProductses)) {
+            for (TmpProducts tmpProducts : tmpProductses) {
+                tmpProductsService.delete(tmpProducts);
+            }
+        }
     }
 
     @RequestMapping(value = "/api/tmp-products", method = RequestMethod.PUT)

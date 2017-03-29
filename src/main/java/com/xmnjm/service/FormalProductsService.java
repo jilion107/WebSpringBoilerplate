@@ -53,6 +53,10 @@ public class FormalProductsService {
         return formalProductsDao.findById(id);
     }
 
+    public List<FormalProducts> findByParent(Long parent) {
+        return formalProductsDao.findByParent(parent);
+    }
+
     public FormalProducts findByAsin(String asin) {
         return formalProductsDao.findByAsin(asin);
     }
@@ -70,9 +74,9 @@ public class FormalProductsService {
     }
 
     @Transactional
-    public void saveFromTmpProduct(Long productTypeId, Long tmpProductId) {
+    public FormalProducts saveFromTmpProduct(Long productTypeId, Long tmpProductId) {
         TmpProducts tmpProducts = tmpProductsService.findById(tmpProductId);
-        if (tmpProducts == null) return;
+        if (tmpProducts == null) return null;
         FormalProducts formalProducts = new FormalProducts();
         BeanUtils.copyProperties(tmpProducts, formalProducts, "id");
         ProductCategory productCategory = productCategoryService.findById(productTypeId);
@@ -82,6 +86,7 @@ public class FormalProductsService {
         }
         this.save(formalProducts);
         tmpProductsService.delete(tmpProductId);
+        return formalProducts;
     }
 
     @Transactional
@@ -90,6 +95,17 @@ public class FormalProductsService {
         formalProducts.setUpdateTime(new Date());
         formalProducts.setStatus(1);
         formalProductsDao.save(formalProducts);
+    }
+
+    @Transactional
+    public void saveFromTmpProduct(FormalProducts formalProducts, TmpProducts tmpProducts) {
+        FormalProducts fp = new FormalProducts();
+        BeanUtils.copyProperties(tmpProducts, fp, "id");
+        fp.setProductTypeName(formalProducts.getProductTypeName());
+        fp.setProductTypeId(formalProducts.getProductTypeId());
+        fp.setParent(formalProducts.getId());
+        this.save(fp);
+        tmpProductsService.delete(tmpProducts);
     }
 
     public List<FormalProducts> export(List<Long> ids, Date endUpdateTime, int fetch) {

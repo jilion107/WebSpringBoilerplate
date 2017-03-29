@@ -71,4 +71,8 @@ public class TmpProductsService {
         roleService.updateProductRequestByRole(productRequest);
         return tmpProductsDao.count(productRequest);
     }
+
+    public List<TmpProducts> findByParent(Long parent) {
+        return tmpProductsDao.findByParent(parent);
+    }
 }

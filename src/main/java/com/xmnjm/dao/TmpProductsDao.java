@@ -40,6 +40,10 @@ public class TmpProductsDao {
         return jpaAccess.findOne(Query.create("from TmpProducts where status=1 and id=:id").param("id", id));
     }
 
+    public List<TmpProducts> findByParent(Long parent) {
+        return jpaAccess.find(Query.create("from TmpProducts where status=1 and parent=:parent").param("parent", parent));
+    }
+
     public void deleteById(Long id) {
         TmpProducts tmpProducts = jpaAccess.findOne(Query.create("from TmpProducts where status=1 and id=:id").param("id", id));
         if (tmpProducts != null) jpaAccess.delete(tmpProducts);

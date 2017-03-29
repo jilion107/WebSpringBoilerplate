@@ -46,10 +46,14 @@ public class FormalProductsDao {
         return jpaAccess.findOne(Query.create("from FormalProducts where status=1 and id=:id").param("id", id));
     }
 
+    public List<FormalProducts> findByParent(Long parent) {
+        return jpaAccess.find(Query.create("from FormalProducts where status=1 and parent=:parent").param("parent", parent));
+    }
+
     public List<FormalProducts> export(List<Long> ids, Date endUpdateTime, int fetch) {
         if (CollectionUtils.isEmpty(ids)) return null;
         StringBuilder builder = new StringBuilder();
-        builder.append("from FormalProducts where status=1 and id in (-100");
+        builder.append("from FormalProducts where status=1 and parent in (-100");
         for (int i = 0; i < ids.size(); i++) {
             builder.append(',').append(ids.get(i));
         }

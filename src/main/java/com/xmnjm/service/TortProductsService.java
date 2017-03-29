@@ -55,6 +55,10 @@ public class TortProductsService {
         tortProductsDao.update(tortProducts);
     }
 
+    public List<TortProducts> findByParent(Long parent) {
+        return tortProductsDao.findByParent(parent);
+    }
+
     public TortProducts findByAsin(String asin) {
         return tortProductsDao.findByAsin(asin);
     }
