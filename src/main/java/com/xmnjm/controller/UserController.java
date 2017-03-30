@@ -1,23 +1,16 @@
 package com.xmnjm.controller;
 
+import com.xmnjm.dao.UserDao;
 import com.xmnjm.model.Company;
 import com.xmnjm.model.User;
 import com.xmnjm.service.CompanyService;
 import com.xmnjm.service.UserService;
+import org.hibernate.annotations.Parameter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by jilion.chen on 3/10/2017.
@@ -31,9 +24,11 @@ public class UserController {
     @Autowired
     private UserService userService;
     @Autowired
+    private UserDao userDao;
+    @Autowired
     private CompanyService companyService;
 
-    @RequestMapping(value = "/api/users", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/users/", method = RequestMethod.GET)
     @ResponseBody
     public List<User> getAllUsers() {
         return userService.getAllUsers();
@@ -115,6 +110,29 @@ public class UserController {
             result.put("result", "success");
             return result;
         } catch (Exception ex) {
+            result.put("result", "fail");
+            result.put("message", "系统异常！");
+            return result;
+        }
+    }
+
+    @RequestMapping(value= "/api/users", method = RequestMethod.GET)
+    @ResponseBody
+    public Object list(@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "phone", required = false) String phone) {
+        Map<String, Object> result = new HashMap<>();
+        List<User> users = null;
+        try {
+            if(userName != "" && userName != null) {
+                users = userDao.list("userName",userName);
+            } else if(phone != "" && phone != null) {
+                users = userDao.list("phone",phone);
+            } else {
+                users = userService.getAllUsers();
+            }
+            result.put("result", "success");
+            result.put("users", users);
+            return result;
+        } catch (Exception e) {
             result.put("result", "fail");
             result.put("message", "系统异常！");
             return result;

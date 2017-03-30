@@ -45,4 +45,10 @@ public class UserDao {
         query.fetch(fetchSize);
         return jpaAccess.find(query);
     }
+
+   public List<User> list(String queryField, String queryStr) {
+       QueryBuilder queryBuilder = QueryBuilder.query("from User").skipEmptyFields()
+               .append(queryField, '%' + queryStr + '%', "like");
+       return jpaAccess.find(queryBuilder.build());
+   }
 }

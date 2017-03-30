@@ -80,4 +80,10 @@ public class ProductFilterDao {
     public void delete(ProductFilter productFilter) {
         jpaAccess.delete(productFilter);
     }
+
+    public List<ProductFilter> list(String queryField, String queryStr) {
+        QueryBuilder queryBuilder = QueryBuilder.query("from ProductFilter").skipEmptyFields()
+                .append(queryField, queryStr);
+        return jpaAccess.find(queryBuilder.build());
+    }
 }

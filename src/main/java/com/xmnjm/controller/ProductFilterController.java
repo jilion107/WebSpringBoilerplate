@@ -1,5 +1,6 @@
 package com.xmnjm.controller;
 
+import com.xmnjm.dao.ProductFilterDao;
 import com.xmnjm.model.ProductCategory;
 import com.xmnjm.model.ProductColour;
 import com.xmnjm.model.ProductFilter;
@@ -10,13 +11,8 @@ import com.xmnjm.service.ProductFilterService;
 import com.xmnjm.service.ProductSizeService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -38,6 +34,9 @@ public class ProductFilterController {
     ProductColourService productColourService;
     @Inject
     ProductSizeService productSizeService;
+
+    @Autowired
+    ProductFilterDao productFilterDao;
 
     @RequestMapping(value = "/api/filters/{id}", method = RequestMethod.GET)
     @ResponseBody
@@ -143,12 +142,39 @@ public class ProductFilterController {
         return productFilterService.list(productFilter, 0, Integer.MAX_VALUE, null);
     }
 
-    @RequestMapping(value = "/api/filters", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/filters/", method = RequestMethod.GET)
     @ResponseBody
     List<ProductFilter> list() {
         ProductFilter productFilter = new ProductFilter();
         productFilter.setStatus(1);
         return productFilterService.list(productFilter, 0, Integer.MAX_VALUE, null);
+    }
+
+    @RequestMapping(value= "/api/filters", method = RequestMethod.GET)
+    @ResponseBody
+    public Object list(@RequestParam(value = "productCategoryName", required = false) String productCategoryName, @RequestParam(value = "productSizeName", required = false) String productSizeName, @RequestParam(value = "productColourName", required = false) String productColourName) {
+        Map<String, Object> result = new HashMap<>();
+        List<ProductFilter> productFilters = null;
+        try {
+            if(productCategoryName != "" && productCategoryName != null) {
+                productFilters = productFilterDao.list("productCategoryName",productCategoryName);
+            } else if(productSizeName != "" && productSizeName != null) {
+                productFilters = productFilterDao.list("productSizeName",productSizeName);
+            } else if(productColourName != "" && productColourName != null) {
+                productFilters = productFilterDao.list("productColourName",productColourName);
+            } else {
+                ProductFilter productFilter = new ProductFilter();
+                productFilter.setStatus(1);
+                productFilters = productFilterService.list(productFilter, 0, Integer.MAX_VALUE, null);
+            }
+            result.put("result", "success");
+            result.put("filters", productFilters);
+            return result;
+        } catch (Exception e) {
+            result.put("result", "fail");
+            result.put("message", "系统异常！");
+            return result;
+        }
     }
 
 }
