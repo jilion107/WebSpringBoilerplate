@@ -85,7 +85,7 @@ public class TortWordController {
             } else {
                 TortWord trtWrd = tortWordService.findById(tortWord.getId());
                 trtWrd.setTortWordName(tortWord.getTortWordName());
-                tortWordService.update(tortWord);
+                tortWordService.update(trtWrd);
                 result.put("result", "success");
                 result.put("tortWord", trtWrd);
             }
