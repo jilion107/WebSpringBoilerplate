@@ -61,6 +61,10 @@ public class FormalProductsService {
         return formalProductsDao.findByAsin(asin);
     }
 
+    public FormalProducts findByAsinParent(String asin) {
+        return formalProductsDao.findByAsinParent(asin);
+    }
+
     @Transactional
     public void delete(FormalProducts formalProducts) {
         formalProducts.setStatus(0);

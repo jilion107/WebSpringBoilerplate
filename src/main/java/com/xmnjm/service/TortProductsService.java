@@ -63,6 +63,10 @@ public class TortProductsService {
         return tortProductsDao.findByAsin(asin);
     }
 
+    public TortProducts findByAsinParent(String asin) {
+        return tortProductsDao.findByAsinParent(asin);
+    }
+
     @Transactional
     public void delete(TortProducts tortProducts) {
         tortProducts.setStatus(0);

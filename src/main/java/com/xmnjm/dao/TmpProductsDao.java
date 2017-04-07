@@ -54,7 +54,11 @@ public class TmpProductsDao {
     }
 
     public TmpProducts findByAsin(String asin) {
-        return jpaAccess.findOne(Query.create("from TmpProducts where status=1 and asin=:asin").param("asin", asin));
+        return jpaAccess.findOne(Query.create("from TmpProducts where status=1 and asin=:asin and parent is not null").param("asin", asin));
+    }
+
+    public TmpProducts findByAsinParent(String asin) {
+        return jpaAccess.findOne(Query.create("from TmpProducts where status=1 and asin=:asin and parent is null").param("asin", asin));
     }
 
     public List<TmpProducts> list(TmpProducts tmpProducts, int offset, int fetchSize, String orderField, Boolean isDesc, Date startCreateTime, Date endCreateTime) {

@@ -55,9 +55,7 @@ public class ImportDataService {
 
     public void readXml(CommonsMultipartFile file, Integer scenarioWhat, Integer userId) throws Exception {
         List<List<String>> rows = readExcelFile(file);
-        System.out.println("----readExcelFile----" + rows == null ? null : rows.size());
         if (rows == null) rows = readCsvFile(file);
-        System.out.println("----readCsvFile----" + rows == null ? null : rows.size());
         if (rows == null) throw new Exception("上传文件解析出错，只支持xls,xlsx,csv格式");
         addToDB(rows, scenarioWhat, userId);
     }
@@ -91,14 +89,13 @@ public class ImportDataService {
             }
         } catch (IOException ex) {
             System.out.println("上传文件解析出错");
-            ex.printStackTrace();
             return null;
         } finally {
             try {
                 if (wb != null) wb.close();
                 if (input != null) input.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                System.out.println("上传文件解析出错");
             }
         }
         return result;
@@ -144,15 +141,22 @@ public class ImportDataService {
         long rowNumber = 0;
         for (List<String> row : rows) {
             try {
-                //当品牌和产品名称为空，表示无变体，不保存
-                if (StringUtils.isEmpty(row.get(1)) && StringUtils.isEmpty(row.get(2))) {
+                //asin为空，不保存
+                if (row.size() == 0 || StringUtils.isEmpty(row.get(3))) {
                     continue;
                 }
+
+                boolean isParent = "Parent".equals(row.get(9));
 
                 Products products = new Products();
                 //如果此ASIN数据已经存在数据库里，直接更新
                 String asin = row.get(3);
-                TmpProducts tmpProducts = tmpProductsService.findByAsin(asin);
+                TmpProducts tmpProducts = null;
+                if (isParent) {
+                    tmpProducts = tmpProductsService.findByAsinParent(asin);
+                } else {
+                    tmpProducts = tmpProductsService.findByAsin(asin);
+                }
                 if (tmpProducts != null && tmpProducts.getId() != null) {
                     BeanUtils.copyProperties(tmpProducts, products);
                     this.setProduct(products, row, scenarioWhat);
@@ -161,7 +165,12 @@ public class ImportDataService {
                     continue;
                 }
 
-                TortProducts tortProducts = tortProductsService.findByAsin(asin);
+                TortProducts tortProducts = null;
+                if (isParent) {
+                    tortProducts = tortProductsService.findByAsinParent(asin);
+                } else {
+                    tortProducts = tortProductsService.findByAsin(asin);
+                }
                 if (tortProducts != null && tortProducts.getId() != null) {
                     BeanUtils.copyProperties(tortProducts, products);
                     this.setProduct(products, row, scenarioWhat);
@@ -170,7 +179,12 @@ public class ImportDataService {
                     continue;
                 }
 
-                FormalProducts formalProducts = formalProductsService.findByAsin(asin);
+                FormalProducts formalProducts = null;
+                if (isParent) {
+                    formalProducts = formalProductsService.findByAsinParent(asin);
+                } else {
+                    formalProducts = formalProductsService.findByAsin(asin);
+                }
                 if (formalProducts != null && formalProducts.getId() != null) {
                     BeanUtils.copyProperties(formalProducts, products);
                     this.setProduct(products, row, scenarioWhat);
@@ -192,7 +206,7 @@ public class ImportDataService {
 
                 //过滤品牌
                 boolean isTort = this.isTort(row);
-                boolean isParent = "Parent".equals(row.get(9));
+
                 if (!isParent) products.setParent(parent);
                 if (isTort) {
                     tortProducts = new TortProducts();
@@ -279,16 +293,16 @@ public class ImportDataService {
         if (StringUtils.hasText(row.get(17))) products.setComment(row.get(17).trim());
 
         //产品短描述
-        if (StringUtils.hasText(row.get(18))) products.setShortDescription(row.get(18).trim());
+        if (row.size() > 18 && StringUtils.hasText(row.get(18))) products.setShortDescription(row.get(18).trim());
 
         //产品长描述
-        if (StringUtils.hasText(row.get(19))) products.setLongDescription(row.get(19).trim());
+        if (row.size() > 19 && StringUtils.hasText(row.get(19))) products.setLongDescription(row.get(19).trim());
 
         //Date First Available
-        if (StringUtils.hasText(row.get(22))) products.setDataFirstAvailable(row.get(22).trim());
+        if (row.size() > 22 && StringUtils.hasText(row.get(22))) products.setDataFirstAvailable(row.get(22).trim());
 
         //Best Sellers Rank
-        if (StringUtils.hasText(row.get(23))) products.setDataFirstAvailable(row.get(23).trim());
+        if (row.size() > 23 && StringUtils.hasText(row.get(23))) products.setDataFirstAvailable(row.get(23).trim());
 
     }
 

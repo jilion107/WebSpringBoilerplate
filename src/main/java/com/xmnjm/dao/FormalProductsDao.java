@@ -63,7 +63,11 @@ public class FormalProductsDao {
     }
 
     public FormalProducts findByAsin(String asin) {
-        return jpaAccess.findOne(Query.create("from FormalProducts where status=1 and asin=:asin").param("asin", asin));
+        return jpaAccess.findOne(Query.create("from FormalProducts where status=1 and asin=:asin and parent is not null").param("asin", asin));
+    }
+
+    public FormalProducts findByAsinParent(String asin) {
+        return jpaAccess.findOne(Query.create("from FormalProducts where status=1 and asin=:asin and parent is null").param("asin", asin));
     }
 
     public List<FormalProducts> list(FormalProducts formalProducts, int offset, int fetchSize, String orderField, Boolean isDesc) {

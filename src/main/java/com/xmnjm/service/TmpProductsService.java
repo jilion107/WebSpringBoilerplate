@@ -51,6 +51,10 @@ public class TmpProductsService {
         return tmpProductsDao.findByAsin(asin);
     }
 
+    public TmpProducts findByAsinParent(String asin) {
+        return tmpProductsDao.findByAsinParent(asin);
+    }
+
     @Transactional
     public void delete(TmpProducts tmpProducts) {
         tmpProductsDao.delete(tmpProducts);
