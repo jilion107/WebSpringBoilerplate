@@ -38,7 +38,6 @@ public class AmazonPageProcessor implements PageProcessor{
             "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0",
             "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:46.0) Gecko/20100101 Firefox/46.0",
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586",
-            "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko",
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36 Core/1.47.277.400 QQBrowser/9.4.7658.400",
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.57.2 (KHTML, like Gecko) Version/5.1.7 Safari/534.57.2"
     };
@@ -58,6 +57,13 @@ public class AmazonPageProcessor implements PageProcessor{
         this.initUrl = initUrl;
         this.keyword = keyword;
         this.targetUrlsRepository = targetUrlsRepository;
+    }
+
+    public AmazonPageProcessor(String targetUrl, String helpUrl, String initUrl, String keyword) {
+        this.targetUrl = targetUrl;
+        this.helpUrl = helpUrl;
+        this.initUrl = initUrl;
+        this.keyword = keyword;
     }
 
     public String getTargetUrl() {
@@ -156,15 +162,29 @@ public class AmazonPageProcessor implements PageProcessor{
         } else {
             try {
                 logger.info("start crawl URL>>>>>>>>>>:" + pageUrl);
-                //list page
-                if (pageUrl.regex(this.helpUrl).match()) {
-                    List<String> targetUrl0 = pageHtml.xpath("//a[@id='pagnNextLink']").links().all();
-                    List<String> targetUrl1 = pageHtml.xpath("//ul[@class='s-result-list']/li/div/div[@class='a-spacing-base']").links().all();
-                    if(targetUrl0.size() > 0) {//for no duplicate, only add next page one by one
-                        List<String> nextPage = new ArrayList<>();
-                        nextPage.add(targetUrl0.get(0));
-                        page.addTargetRequests(nextPage, 1000);
-                        this.saveTargeUrls(nextPage);
+                if (pageUrl.regex(this.getInitUrl()).match()) {//bring in category to be more specific
+                    List<String> categoryLinks = pageHtml.xpath("//div[@class='categoryRefinementsSection']").links().regex(".*rh=n%3A\\d+%2Cn%3A\\d+.*").all();
+                    page.addTargetRequests(categoryLinks, 10000);
+                    this.saveTargeUrls(categoryLinks);
+                    page.setSkip(true);
+                } else if (pageUrl.regex(this.helpUrl).match()) {//list page
+                    List<String> targetUrl0 = null;
+                    List<String> targetUrl1 = null;
+                    Selectable pageList = pageHtml.xpath("//a[@id='pagnNextLink']");
+                    if (new Integer(pageList.regex(".+page=(\\d+)").toString()) < 10) {
+                        targetUrl0 = pageList.links().all();
+                        if(targetUrl0.size() > 0) {//for no duplicate, only add next page one by one
+                            List<String> nextPage = new ArrayList<>();
+                            nextPage.add(targetUrl0.get(0));
+                            page.addTargetRequests(nextPage, 1000);
+                            this.saveTargeUrls(nextPage);
+                        }
+                    }
+                    Selectable gridList = pageHtml.xpath("//ul[@class='s-result-list']/li/div/div[@class='a-spacing-small'or @class='a-spacing-base']");
+                    if(gridList.get() != null) {
+                        targetUrl1 = pageHtml.xpath("//ul[@class='s-result-list']/li/div/div[@class='a-spacing-small'or @class='a-spacing-base']").links().all();
+                    } else {
+                        targetUrl1 = pageHtml.xpath("//ul[@class='s-result-list']/li/div/div/div/div[@class='a-col-left']").links().all();
                     }
                     page.addTargetRequests(targetUrl1, 100);
                     this.saveTargeUrls(targetUrl1);
@@ -204,7 +224,8 @@ public class AmazonPageProcessor implements PageProcessor{
                 } else {//target page to extract product info
                     page.putField("originalUrl", pageUrl.toString());
                     page.putField("title", pageHtml.xpath("//div[@id='titleSection']/h1/span[@id='productTitle']/text()"));
-                    page.putField("price", pageHtml.xpath("//span[@id='priceblock_ourprice']/text()"));
+                    page.putField("price", pageHtml.xpath("//span[@id='priceblock_ourprice']").regex("\\$(\\d+\\.?\\d+)"));
+                    page.putField("lowestPrice", pageHtml.xpath("//div[@id='mbc']/div/div[@class='a-padding-base']").regex("\\$(\\d+\\.?\\d+)"));
                     if(pageHtml.xpath("//div[@id='detailBullets_feature_div']/ul/li/").get() != null) {
                         page.putField("parentAsin", pageHtml.xpath("//div[@id='detailBullets_feature_div']/ul/li/").regex(".*ASIN:.*").regex("<span>\\w+</span>").regex("\\w+").all().get(1));
                     } else if(pageHtml.xpath("//div[@id='detail-bullets']").get() != null){
@@ -222,6 +243,8 @@ public class AmazonPageProcessor implements PageProcessor{
                     String listColor = pageHtml.xpath("//div[@id='variation_color_name']/div/span/text()").toString();
                     page.putField("color", listColor == null ? (dropdownColor == null ? radioColor : dropdownColor) : listColor);
                     page.putField("fromApi", 0);
+                    page.putField("rank", pageHtml.xpath("//li[@id='SalesRank']").regex("(#\\d+((,)?\\d+)?)").regex("#(.*)"));
+                    page.putField("brand", pageHtml.xpath("//div[@id='brandByline_feature_div']/div/a/text()"));
                 }
                 this.markedUrlCompleted(pageUrl.toString());
             } catch (Exception e) {
@@ -268,14 +291,14 @@ public class AmazonPageProcessor implements PageProcessor{
 
 
     public static void main(String[] args) {
-        String hUrl = "https://www\\.amazon\\.com/s/.+page=\\d+.+|https://www\\.amazon\\.com/s/ref=nb_sb_noss_2\\?url=search.*";;
+        String hUrl = "https://www\\.amazon\\.com/s/.+page=\\d+.+|https://www\\.amazon\\.com/s/ref.+rh=.*n%3A\\d+%2Cn%3A\\d+.+keywords.+";
         String tUrl = "https://www\\.amazon\\.com/.+/dp/.+/ref.+";
-        String initUrl = "https://www.amazon.com/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=t+shirt";
+        String initUrl = "https://www\\.amazon\\.com/s/ref.+search-alias.+field-keywords.+";
         //String initUrl = "https://www.amazon.com/s/ref=sr_pg_4?rh=i%3Aaps%2Ck%3At+shirt&page=4&keywords=t+shirt&ie=UTF8&qid=1495097601&spIA=B06WWM5MS1,B06XTFV2LX,B071NKBBR9,B06X9JL999,B01M1K4ABG,B07166Y6TP";
         //String initUrl2 = "https://www.amazon.com/Hanes-ComfortSoft-T-Shirt-Black-X-Large/dp/B013X4Z4HS/ref=sr_1_2/139-7255659-8221437?ie=UTF8&qid=1494995306&sr=8-2&keywords=t+shirt&th=1&psc=1";
        // Spider.create(new AmazonPageProcessor(tUrl, hUrl, initUrl)).addUrl(new String[] {initUrl, initUrl2}).addPipeline(new AmazonDBPipeline()).thread(1).run();
         HttpClientDownloader httpClientDownloader = new HttpClientDownloader();
         httpClientDownloader.setProxyProvider(SimpleProxyProvider.from(new Proxy("104.198.32.133", 80)));
-        Spider.create(new AmazonPageProcessor(tUrl, hUrl, initUrl, "t shirt",null)).setDownloader(httpClientDownloader).setScheduler(new PriorityScheduler()).addUrl("https://www.amazon.com/ONeill-Wetsuits-Protection-Sleeve-X-Large/dp/B004I44IW0/ref=sr_1_304?ie=UTF8&qid=1495619063&sr=8-304&keywords=t+shirt").addPipeline(new AmazonDBPipeline()).thread(1).run();
+        Spider.create(new AmazonPageProcessor(tUrl, hUrl, initUrl, "t shirt",null)).setScheduler(new PriorityScheduler()).addUrl("https://www.amazon.com/s/ref=nb_sb_noss_2?url=search-alias%3Dsporting&field-keywords=cap&rh=n%3A3375251%2Ck%3Acap").addPipeline(new AmazonDBPipeline()).thread(1).run();
     }
 }

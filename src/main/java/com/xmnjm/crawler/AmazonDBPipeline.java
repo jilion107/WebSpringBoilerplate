@@ -42,6 +42,9 @@ public class AmazonDBPipeline implements Pipeline {
                 amazonProduct.setSizeType(resultItems.get("size").toString());
                 amazonProduct.setColor(resultItems.get("color").toString());
                 amazonProduct.setPrice(resultItems.get("price").toString());
+                amazonProduct.setRank(new Integer(resultItems.get("rank").toString().replace(",", "")));
+                amazonProduct.setLowestprice(resultItems.get("lowestPrice"));
+                amazonProduct.setLowestprice(resultItems.get("lowestPrice"));
                 if(resultItems.get("comments") != null) {
                     amazonProduct.setComments(new Integer(resultItems.get("comments").toString().replace(",", "")));
                 }

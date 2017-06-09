@@ -37,19 +37,19 @@ public class AmazonCrawlController {
         Map<String, Object> result = new HashMap<>();
         try {
             logger.info("jilion: crawler 开始了.........");
-            String hUrl = "https://www\\.amazon\\.com/s/.+page=\\d+.+|https://www\\.amazon\\.com/s/ref=nb_sb_noss_2\\?url=search.*";;
+            String hUrl = "https://www\\.amazon\\.com/s/.+page=\\d+.+|https://www\\.amazon\\.com/s/ref.+rh=.*n%3A\\d+%2Cn%3A\\d+.+keywords.+";
             String tUrl = "https://www\\.amazon\\.com/.+/dp/.+/ref.+";
-            String initUrl = "https://www.amazon.com/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=" + keyword.replaceAll(" ", "+");
+            String initUrl = "https://www\\.amazon\\.com/s/ref.+search-alias.+field-keywords.+";
             List<String> targetUrls = this.initiateUrls();
             if(targetUrls.size() == 0) {
-                targetUrls.add(initUrl);
+                targetUrls.add("https://www.amazon.com/s/ref=nb_sb_noss_2?url=search-alias=fashion&field-keywords=t+shirt&rh=n:7141123011,k:t+shirt");
             }
             logger.info("目标URL" + targetUrls.size() + "个!!!!");
             HttpClientDownloader httpClientDownloader = new HttpClientDownloader();
             List<Proxy> proxies = this.getProxies();
             httpClientDownloader.setProxyProvider(SimpleProxyProvider.from(proxies.toArray(new Proxy[proxies.size()])));
-            Spider.create(new AmazonPageProcessor(tUrl, hUrl, initUrl, keyword, targetUrlsRepository)).setDownloader(httpClientDownloader).setScheduler(new PriorityScheduler()).addUrl(targetUrls.toArray(new String[0])).addPipeline(amazonDBPipeline).thread(10).run();
-           // Spider.create(new AmazonPageProcessor(tUrl, hUrl, initUrl, targetUrlsRepository)).setScheduler(new PriorityScheduler()).addUrl(targetUrls.toArray(new String[0])).addPipeline(amazonDBPipeline).thread(10).run();
+            //Spider.create(new AmazonPageProcessor(tUrl, hUrl, initUrl, keyword, targetUrlsRepository)).setDownloader(httpClientDownloader).setScheduler(new PriorityScheduler()).addUrl(targetUrls.toArray(new String[0])).addPipeline(amazonDBPipeline).thread(10).run();
+            Spider.create(new AmazonPageProcessor(tUrl, hUrl, initUrl, keyword, targetUrlsRepository)).setScheduler(new PriorityScheduler()).addUrl(targetUrls.toArray(new String[0])).addPipeline(amazonDBPipeline).thread(10).run();
             result.put("result", "success");
             return result;
         } catch (Exception ex) {

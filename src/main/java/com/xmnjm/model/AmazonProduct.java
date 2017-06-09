@@ -61,6 +61,15 @@ public class AmazonProduct {
     @Column(name = "keyword")
     private String keyword;
 
+    @Column(name = "rank")
+    private Integer rank;
+
+    @Column(name = "lowestprice")
+    private String lowestprice;
+
+    @Column(name = "brand")
+    private String brand;
+
     public AmazonProduct() {
     }
 
@@ -198,5 +207,29 @@ public class AmazonProduct {
 
     public void setKeyword(String keyword) {
         this.keyword = keyword;
+    }
+
+    public Integer getRank() {
+        return rank;
+    }
+
+    public void setRank(Integer rank) {
+        this.rank = rank;
+    }
+
+    public String getLowestprice() {
+        return lowestprice;
+    }
+
+    public void setLowestprice(String lowestprice) {
+        this.lowestprice = lowestprice;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 }
